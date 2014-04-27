@@ -5,17 +5,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
-import org.lwjgl.input.Keyboard;
+import org.freyja.libgdx.cocostudio.ui.widget.ListView;
+import org.freyja.libgdx.cocostudio.ui.widget.PageView;
+import org.freyja.libgdx.cocostudio.ui.widget.list.BaseListCell;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -84,14 +86,16 @@ public class DemoStage extends CommonStage {
 			public boolean keyDown(InputEvent event, int keycode) {
 				getActors().clear();
 				i++;
-				init();
+				// init();
+				pView.setPageIdx(i%2);
 				return super.keyDown(event, keycode);
 			}
 		});
 
 		System.out.println("按任意键可切换场景,out文件夹内有UI的工程文件.");
 	}
-
+	
+	PageView pView;
 	/** 移植的简单动作编辑器功能 */
 	private void SampleUIAnimation() {
 
@@ -245,16 +249,38 @@ public class DemoStage extends CommonStage {
 
 	}
 
+	public static class DandanCell extends BaseListCell {
+		public DandanCell() {
+			super();
+			this.addActor(new Image(new Texture(Gdx.files
+					.internal("dandan/jjc/add.png"))));
+			this.center();
+			this.pack();
+		}
+	}
+
 	void initMap() {
+		//
+		// CocoStudioUIEditor editor = new CocoStudioUIEditor(
+		// Gdx.files.internal("DemoMap/DemoMap.json"), null, null, null,
+		// null);
 
 		CocoStudioUIEditor editor = new CocoStudioUIEditor(
-				Gdx.files.internal("DemoMap/DemoMap.json"), null, null, null,
+				Gdx.files.internal("SanguoNewUI/mount.json"), null, null, null,
 				null);
+
 		Group group = editor.createGroup();
 		addActor(group);
-
+		ListView list = (ListView) editor.findActor("ListView_216");
+		Object[] data = new Object[100];
+		for (int i = 0; i < 100; i++) {
+			data[i] = "dddd" + i;
+		}
+		list.setItems(data, DandanCell.class, 50, 50);
+		list.setVisible(false);
 		Actor dragPanel = editor.findActor("DragPanel");
 
+		pView = (PageView) editor.findActor("PageView");
 		// dragPanel.addListener(new ClickListener() {
 		// @Override
 		// public void clicked(InputEvent event, float x, float y) {

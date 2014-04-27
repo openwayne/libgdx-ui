@@ -11,8 +11,8 @@ public class Main {
 //		cfg.width = 480;
 //		cfg.height = 320;
 		
-		cfg.width = 800;
-		cfg.height = 480;
+		cfg.width = 1280;
+		cfg.height = 768;
 		
 		cfg.resizable = true;
 		new LwjglApplication(new MyGame(), cfg);
