@@ -1,11 +1,7 @@
 package org.freyja.libgdx.cocostudio.ui;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +16,8 @@ import org.freyja.libgdx.cocostudio.ui.model.animation.CCAnimation;
 import org.freyja.libgdx.cocostudio.ui.parser.group.CCButton;
 import org.freyja.libgdx.cocostudio.ui.parser.group.CCCheckBox;
 import org.freyja.libgdx.cocostudio.ui.parser.group.CCLabelAtlas;
+import org.freyja.libgdx.cocostudio.ui.parser.group.CCListView;
+import org.freyja.libgdx.cocostudio.ui.parser.group.CCPageView;
 import org.freyja.libgdx.cocostudio.ui.parser.group.CCPanel;
 import org.freyja.libgdx.cocostudio.ui.parser.group.CCScrollView;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCImageView;
@@ -29,7 +27,6 @@ import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLoadingBar;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCSlider;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCTextField;
 import org.freyja.libgdx.cocostudio.ui.util.FontUtil;
-import org.freyja.libgdx.cocostudio.ui.util.StringUtil;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.Gdx;
@@ -40,27 +37,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -159,6 +142,10 @@ public class CocoStudioUIEditor {
 
 		addParser(new CCLabelAtlas());
 		addParser(new CCSlider());
+
+		addParser(new CCPageView());
+		addParser(new CCListView());
+
 		actors = new HashMap<String, Array<Actor>>();
 		actionActors = new HashMap<Integer, Actor>();
 

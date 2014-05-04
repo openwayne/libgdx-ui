@@ -5,17 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
-import org.lwjgl.input.Keyboard;
+import org.freyja.libgdx.cocostudio.ui.widget.ListView;
+import org.freyja.libgdx.cocostudio.ui.widget.list.ICellModel;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -245,14 +246,39 @@ public class DemoStage extends CommonStage {
 
 	}
 
-	void initMap() {
+	public class DandanCell implements ICellModel{
 
+		@Override
+		public void setData() {
+			
+		}
+
+		@Override
+		public Table createCell() {
+			
+			return null;
+		}
+	}
+	
+	void initMap() {
+		//
+		// CocoStudioUIEditor editor = new CocoStudioUIEditor(
+		// Gdx.files.internal("DemoMap/DemoMap.json"), null, null, null,
+		// null);
+		
 		CocoStudioUIEditor editor = new CocoStudioUIEditor(
-				Gdx.files.internal("DemoMap/DemoMap.json"), null, null, null,
+				Gdx.files.internal("dandan/sanguo_1.json"), null, null, null,
 				null);
+		
 		Group group = editor.createGroup();
 		addActor(group);
-
+		ListView list = (ListView) editor.findActor("ListView_99");
+		DandanCell[] data = new DandanCell[100];
+		for (int i = 0; i < 100; i++) {
+			data[i] = "dddd" + i;
+		}
+		
+		list.setItems(data, DandanCell.class, 50, 50);
 		Actor dragPanel = editor.findActor("DragPanel");
 
 		// dragPanel.addListener(new ClickListener() {
