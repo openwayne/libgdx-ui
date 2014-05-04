@@ -333,7 +333,7 @@ public class ListView extends Table implements Cullable {
 		cellTable.clear();
 		for (int i = 0; i < items.length; i++) {
 			try {
-				CellWrapper t = cell.clone();
+				CellWrapper t = cell.cloneCell();
 				t.setIndex(i);
 				t.setSize(itemWidth, itemHeight);
 				t.setData(items[i]);

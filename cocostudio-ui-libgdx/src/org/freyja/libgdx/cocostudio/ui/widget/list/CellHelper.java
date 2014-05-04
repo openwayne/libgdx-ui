@@ -42,7 +42,7 @@ public class CellHelper {
 		/**
 		 * 复制自身
 		 */
-		public abstract CellWrapper clone();
+		public abstract CellWrapper cloneCell();
 	}
 	
 }
