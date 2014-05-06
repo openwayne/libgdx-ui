@@ -64,7 +64,7 @@ public class CocoStudioUIEditor {
 	final String tag = CocoStudioUIEditor.class.getName();
 
 	/** json文件所在目录 */
-	protected String dirName;
+	protected String dirName = "";
 
 	/** 所有纹理 */
 	protected Collection<TextureAtlas> textureAtlas;
@@ -94,6 +94,8 @@ public class CocoStudioUIEditor {
 
 	/** 默认ttf字体文件 */
 	protected FileHandle defaultFont;
+
+	private Map<Integer, Actor> _tags;
 
 	/**
 	 * 不需要显示文字
@@ -148,14 +150,16 @@ public class CocoStudioUIEditor {
 
 		actors = new HashMap<String, Array<Actor>>();
 		actionActors = new HashMap<Integer, Actor>();
+		_tags = new HashMap<Integer, Actor>();
 
 		animations = new HashMap<String, Map<Actor, Action>>();
 
-		dirName = jsonFile.parent().toString();
-
-		if (!dirName.equals("")) {
-			dirName += File.separator;
-		}
+		// // 改造一下,方便资源统一管理
+		// dirName = jsonFile.parent().toString();
+		//
+		// if (!dirName.equals("")) {
+		// dirName += File.separator;
+		// }
 		String json = jsonFile.readString("utf-8");
 		Json jj = new Json();
 		jj.setIgnoreUnknownFields(true);
@@ -176,6 +180,10 @@ public class CocoStudioUIEditor {
 			return null;
 		}
 		return array.get(0);
+	}
+	
+	public Actor findActorByTag(int tag) {
+		return _tags.get(tag);
 	}
 
 	/** 查找所有同名的控件 */
@@ -407,8 +415,7 @@ public class CocoStudioUIEditor {
 	}
 
 	public Drawable findDrawable(CCOption option, String name) {
-
-		if (option.isScale9Enable()) {// 九宫格支持
+		if (option.isScale9Enable() || option.isBackGroundScale9Enable()) {// 九宫格支持
 			NinePatch np = findNinePatch(option, name);
 			if (np == null) {
 				return null;
@@ -519,6 +526,7 @@ public class CocoStudioUIEditor {
 		}
 
 		if (fontFile == null) {
+			fontFile = Gdx.files.internal("DroidSansFallback.ttf");
 			debug(option, "ttf字体:" + option.getFontName() + " 不存在,使用默认字体");
 		}
 
@@ -567,6 +575,10 @@ public class CocoStudioUIEditor {
 
 	public void setActionActors(Map<Integer, Actor> actionActors) {
 		this.actionActors = actionActors;
+	}
+
+	public Map<Integer, Actor> getTags() {
+		return _tags;
 	}
 
 }

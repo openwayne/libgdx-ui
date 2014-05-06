@@ -8,8 +8,6 @@ import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -91,6 +89,7 @@ public abstract class BaseWidgetParser {
 		editor.getActors().put(actor.getName(), arrayActors);
 
 		editor.getActionActors().put(option.getActiontag(), actor);
+		editor.getTags().put(option.getTag(), actor);
 	}
 
 	/** 子控件根据zOrder属性排序 */

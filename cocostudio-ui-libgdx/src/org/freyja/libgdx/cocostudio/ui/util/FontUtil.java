@@ -3,6 +3,7 @@ package org.freyja.libgdx.cocostudio.ui.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -11,6 +12,11 @@ public class FontUtil {
 
 	static FreeTypeFontGenerator generator;
 	static Map<FileHandle, FreeTypeFontGenerator> generators = new HashMap<FileHandle, FreeTypeFontGenerator>();
+	static FileHandle fontFile = Gdx.files.internal("DroidSansFallback.ttf");
+
+	public static BitmapFont createFont(String text, int fontSize) {
+		return createFont(fontFile, text, fontSize);
+	}
 
 	/**
 	 * 缓存FreeTypeFontGenerator 对性能有显著提升

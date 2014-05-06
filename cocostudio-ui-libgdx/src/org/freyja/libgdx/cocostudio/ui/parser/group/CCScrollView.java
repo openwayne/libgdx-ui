@@ -1,6 +1,5 @@
 package org.freyja.libgdx.cocostudio.ui.parser.group;
 
-import org.freyja.libgdx.cocostudio.ui.BaseWidgetParser;
 import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;

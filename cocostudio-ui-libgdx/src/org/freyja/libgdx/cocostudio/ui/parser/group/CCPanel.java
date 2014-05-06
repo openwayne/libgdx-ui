@@ -1,6 +1,5 @@
 package org.freyja.libgdx.cocostudio.ui.parser.group;
 
-import org.freyja.libgdx.cocostudio.ui.BaseWidgetParser;
 import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
@@ -8,12 +7,9 @@ import org.freyja.libgdx.cocostudio.ui.parser.GroupParser;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -58,19 +54,20 @@ public class CCPanel extends GroupParser {
 			Drawable tr = editor.findDrawable(option, option
 					.getBackGroundImageData().getPath());
 			if (tr != null) {
-				Image bg = new Image(tr);
-				bg.setPosition((option.getWidth() - bg.getWidth()) / 2,
-						(option.getHeight() - bg.getHeight()) / 2);
-				// bg.setFillParent(true);
-				bg.setTouchable(Touchable.disabled);
-
-				bg.setColor(option.getColorR() / 255f,
-						option.getColorG() / 255f, option.getColorB() / 255f,
-						option.getOpacity() / 255f);
-				table.addActor(bg);
+//				Image bg = new Image(tr);
+//				bg.setPosition((option.getWidth() - bg.getWidth()) / 2,
+//						(option.getHeight() - bg.getHeight()) / 2);
+//				// bg.setFillParent(true);
+//				bg.setTouchable(Touchable.disabled);
+//
+//				bg.setColor(option.getColorR() / 255f,
+//						option.getColorG() / 255f, option.getColorB() / 255f,
+//						option.getOpacity() / 255f);
+//				bg.setSize(option.getWidth(), option.getHeight());
+//				table.addActor(bg);
+				table.setBackground(tr);
 			}
 		}
-
 		table.setClip(option.isClipAble());
 
 		return table;
