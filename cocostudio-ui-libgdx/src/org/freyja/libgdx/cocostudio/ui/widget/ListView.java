@@ -92,23 +92,22 @@ public class ListView extends WidgetGroup {
 			throw new IllegalArgumentException("style cannot be null.");
 
 		cellTable = new Table();
-		cellTable.left();
-		cellTable.pad(5);
-		this.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				hitItem(x, y, selectable);
-			}
-		});
+		cellTable.top().left().pad(5);
 
 		this.style = style;
 		setWidget(cellTable);
 		setWidth(150);
 		setHeight(150);
 
-		addCaptureListener(new InputListener() {
+		addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				hitItem(x, y, selectable);
+				super.clicked(event, x, y);
+			}
+		});
 
+		addCaptureListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (draggingPointer != -1)
@@ -124,14 +123,12 @@ public class ListView extends WidgetGroup {
 					return false;
 
 				if (scrollX && scrollBounds.contains(x, y)) {
-					event.stop();
 					resetFade();
 					touchScrollH = true;
 					draggingPointer = pointer;
 					// setScrollX(amountX + areaWidth * (x < 0 ? -1 : 1));
 				}
 				if (scrollY && scrollBounds.contains(x, y)) {
-					event.stop();
 					resetFade();
 					touchScrollV = true;
 					draggingPointer = pointer;
@@ -150,6 +147,8 @@ public class ListView extends WidgetGroup {
 
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
+				event.stop();
+
 				if (pointer != draggingPointer)
 					return;
 				if (touchScrollH) {
