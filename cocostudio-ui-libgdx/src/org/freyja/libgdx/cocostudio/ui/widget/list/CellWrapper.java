@@ -6,13 +6,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 public abstract class CellWrapper {
-	protected CocoStudioUIEditor _editor;
-	protected Group _group;
-	protected int _idx;
+	private CocoStudioUIEditor _editor;
+	private Group _group;
+	private int _idx;
+	private boolean isSelected;
 
 	public void init(FileHandle file) {
-		_editor = new CocoStudioUIEditor(file, null, null, null, null);
-		_group = _editor.createGroup();
+		this._editor = new CocoStudioUIEditor(file, null, null, null, null);
+		this._group = this.getEditor().createGroup();
 	}
 
 	public CocoStudioUIEditor getEditor() {
@@ -26,7 +27,7 @@ public abstract class CellWrapper {
 	public void setIndex(int idx) {
 		_idx = idx;
 	}
-	
+
 	public int getIndex() {
 		return _idx;
 	}
@@ -49,9 +50,16 @@ public abstract class CellWrapper {
 
 	public void selectCell() {
 		System.out.println("点中" + _idx + "sell了");
+		this.isSelected=true;
 	}
-	
+
 	public void cancleCell() {
 		System.out.println("取消" + _idx + "选中");
+		this.isSelected=false;
 	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
 }
