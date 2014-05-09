@@ -63,8 +63,11 @@ public class CCTextField extends WidgetParser {
 				super.setMessageText(messageText);
 			};
 		};
-		
-		textField.setMaxLength(option.getMaxLength());
+		if (option.isMaxLengthEnable()) {
+			textField.setMaxLength(option.getMaxLength());
+		} else {
+			textField.setMaxLength(500);
+		}
 		textField.setMessageText(option.getPlaceHolder());
 		textField.setPasswordMode(option.isPasswordEnable());
 		textField.setPasswordCharacter(option.getPasswordStyleText());
