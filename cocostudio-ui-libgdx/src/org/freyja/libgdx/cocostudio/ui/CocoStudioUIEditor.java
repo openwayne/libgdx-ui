@@ -1,6 +1,5 @@
 package org.freyja.libgdx.cocostudio.ui;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
