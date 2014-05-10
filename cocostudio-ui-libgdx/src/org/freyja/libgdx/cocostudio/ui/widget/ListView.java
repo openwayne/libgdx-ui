@@ -904,10 +904,9 @@ public class ListView extends WidgetGroup {
 	private Table cellTable;
 	private boolean selectable = true;
 
-	/**
-	 * 需要有几列?
-	 */
-	private int _col = 1;
+	private boolean horv = true;
+	private int v = 1;
+	private int h = 1;
 
 	/**
 	 * 默认为1
@@ -915,21 +914,79 @@ public class ListView extends WidgetGroup {
 	 * @param col
 	 */
 	public void setCol(int col) {
-		if (col <= _col) {
+		if (col <= v) {
 			return;
 		}
-		_col = col;
+		v = col;
 		layoutTable();
+	}
+
+	/**
+	 * 
+	 * @param horv
+	 *            横向优先设置为true，纵向优先设置为false
+	 * @param v
+	 *            纵向列数
+	 * @param h
+	 *            横向行数
+	 */
+	public void layoutCell(boolean horv, int v, int h) {
+		this.horv = horv;
+		this.v = v;
+		this.h = h;
+		if (horv) {
+			// 横向
+			layoutH(h);
+		} else {
+			// 纵向
+			layoutV(v);
+		}
+	}
+
+	/**
+	 * 横向平铺
+	 * 
+	 * @param h
+	 */
+	private void layoutH(int h) {
+		cellTable.clear();
+		cellTable.bottom().left();
+		int half = (int) Math.ceil(cells.size / h);
+		int idx = 0;
+		for (int i = 0; i < cells.size; i++) {
+			idx++;
+			if (idx > half) {
+				idx = 0;
+				cellTable.row();
+			}
+			cellTable.add(cells.get(i).getGroup());
+		}
+		cellTable.pack();
+
+	}
+
+	private void layoutV(int v) {
+		cellTable.clear();
+		for (int i = 0; i < cells.size; i++) {
+			if (i != 1 && i != 0 && i % v == 0) {
+				cellTable.row();
+			}
+			cellTable.add(cells.get(i).getGroup());
+			if (v == 1) {
+				cellTable.row();
+			}
+		}
+		cellTable.pack();
 	}
 
 	private void layoutTable() {
 		cellTable.clear();
 		for (int i = 0; i < cells.size; i++) {
-			if (i % _col != 0) {
+			if (i != 1 && i != 0 && i % v == 0) {
 				cellTable.row();
 			}
 			cellTable.add(cells.get(i).getGroup());
-			if (_col == 1) {
+			if (v == 1) {
 				cellTable.row();
 			}
 		}
