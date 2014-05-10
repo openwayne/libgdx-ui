@@ -69,7 +69,8 @@ public class ListView extends WidgetGroup {
 	float flingTimer;
 	private boolean overscrollX = true, overscrollY = true;
 	float flingTime = 1f;
-	private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
+	private float overscrollDistance = 50, overscrollSpeedMin = 30,
+			overscrollSpeedMax = 200;
 	private boolean forceScrollX, forceScrollY;
 	private boolean disableX, disableY;
 	private boolean clamp = true;
@@ -108,7 +109,8 @@ public class ListView extends WidgetGroup {
 		});
 
 		addCaptureListener(new InputListener() {
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
 				if (draggingPointer != -1)
 					return false;
 				if (pointer == 0 && button != 0)
@@ -137,13 +139,15 @@ public class ListView extends WidgetGroup {
 				return true;
 			}
 
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
 				if (pointer != draggingPointer)
 					return;
 				cancel();
 			}
 
-			public void touchDragged(InputEvent event, float x, float y, int pointer) {
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
 				event.stop();
 
 				if (pointer != draggingPointer)
@@ -171,7 +175,8 @@ public class ListView extends WidgetGroup {
 		});
 
 		flickScrollListener = new ActorGestureListener() {
-			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+			public void pan(InputEvent event, float x, float y, float deltaX,
+					float deltaY) {
 				resetFade();
 				amountX -= deltaX;
 				amountY += deltaY;
@@ -204,7 +209,8 @@ public class ListView extends WidgetGroup {
 		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
-			public boolean scrolled(InputEvent event, float x, float y, int amount) {
+			public boolean scrolled(InputEvent event, float x, float y,
+					int amount) {
 				resetFade();
 				if (scrollY)
 					setScrollY(amountY + getMouseWheelY() * amount);
@@ -239,10 +245,10 @@ public class ListView extends WidgetGroup {
 	void clamp() {
 		if (!clamp)
 			return;
-		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils
-				.clamp(amountX, 0, maxX));
-		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils
-				.clamp(amountY, 0, maxY));
+		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance,
+				maxX + overscrollDistance) : MathUtils.clamp(amountX, 0, maxX));
+		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance,
+				maxY + overscrollDistance) : MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	public void setStyle(ListViewStyle style) {
@@ -265,6 +271,8 @@ public class ListView extends WidgetGroup {
 
 		if (isSelectedDirty) {
 			isSelectedDirty = false;
+			CellWrapper cell = cells.get(selectedIndex);
+			cell.selectCell();
 		}
 
 		boolean panning = flickScrollListener.getGestureDetector().isPanning();
@@ -300,22 +308,39 @@ public class ListView extends WidgetGroup {
 			}
 		}
 
-		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
+		if (smoothScrolling && flingTimer <= 0 && !touchScrollH
+				&& !touchScrollV && !panning) {
 			if (visualAmountX != amountX) {
 				if (visualAmountX < amountX)
-					visualScrollX(Math.min(amountX,
-							visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta)));
+					visualScrollX(Math.min(
+							amountX,
+							visualAmountX
+									+ Math.max(150 * delta,
+											(amountX - visualAmountX) * 5
+													* delta)));
 				else
-					visualScrollX(Math.max(amountX,
-							visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta)));
+					visualScrollX(Math.max(
+							amountX,
+							visualAmountX
+									- Math.max(150 * delta,
+											(visualAmountX - amountX) * 5
+													* delta)));
 			}
 			if (visualAmountY != amountY) {
 				if (visualAmountY < amountY)
-					visualScrollY(Math.min(amountY,
-							visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta)));
+					visualScrollY(Math.min(
+							amountY,
+							visualAmountY
+									+ Math.max(150 * delta,
+											(amountY - visualAmountY) * 5
+													* delta)));
 				else
-					visualScrollY(Math.max(amountY,
-							visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta)));
+					visualScrollY(Math.max(
+							amountY,
+							visualAmountY
+									- Math.max(150 * delta,
+											(visualAmountY - amountY) * 5
+													* delta)));
 			}
 		} else {
 			if (visualAmountX != amountX)
@@ -328,15 +353,15 @@ public class ListView extends WidgetGroup {
 			if (overscrollX && scrollX) {
 				if (amountX < 0) {
 					resetFade();
-					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX
-							/ overscrollDistance)
+					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
+							* -amountX / overscrollDistance)
 							* delta;
 					if (amountX > 0)
 						scrollX(0);
 				} else if (amountX > maxX) {
 					resetFade();
-					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX)
-							/ overscrollDistance)
+					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
+							* -(maxX - amountX) / overscrollDistance)
 							* delta;
 					if (amountX < maxX)
 						scrollX(maxX);
@@ -345,15 +370,15 @@ public class ListView extends WidgetGroup {
 			if (overscrollY && scrollY) {
 				if (amountY < 0) {
 					resetFade();
-					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY
-							/ overscrollDistance)
+					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
+							* -amountY / overscrollDistance)
 							* delta;
 					if (amountY > 0)
 						scrollY(0);
 				} else if (amountY > maxY) {
 					resetFade();
-					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY)
-							/ overscrollDistance)
+					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
+							* -(maxY - amountY) / overscrollDistance)
 							* delta;
 					if (amountY < maxY)
 						scrollY(maxY);
@@ -399,7 +424,8 @@ public class ListView extends WidgetGroup {
 		scrollY = forceScrollY || (widgetHeight > areaHeight && !disableY);
 
 		// Set the widget area bounds.
-		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
+		widgetAreaBounds
+				.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		// If the widget is smaller than the available space, make it take up
 		// the available space.
@@ -412,7 +438,8 @@ public class ListView extends WidgetGroup {
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
 
-		scrollBounds.set(cellTable.getX(), cellTable.getY(), cellTable.getWidth(), cellTable.getHeight());
+		scrollBounds.set(cellTable.getX(), cellTable.getY(),
+				cellTable.getWidth(), cellTable.getHeight());
 
 		widget.setSize(widgetWidth, widgetHeight);
 		if (widget instanceof Layout)
@@ -470,8 +497,8 @@ public class ListView extends WidgetGroup {
 		}
 
 		// Render scrollbars and knobs on top.
-		batch.setColor(color.r, color.g, color.b,
-				color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha
+				* Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
 
 		resetTransform(batch);
 	}
@@ -480,7 +507,8 @@ public class ListView extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float width = ((Layout) widget).getPrefWidth();
 			if (style.background != null)
-				width += style.background.getLeftWidth() + style.background.getRightWidth();
+				width += style.background.getLeftWidth()
+						+ style.background.getRightWidth();
 			return width;
 		}
 		return 150;
@@ -490,7 +518,8 @@ public class ListView extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float height = ((Layout) widget).getPrefHeight();
 			if (style.background != null)
-				height += style.background.getTopHeight() + style.background.getBottomHeight();
+				height += style.background.getTopHeight()
+						+ style.background.getBottomHeight();
 			return height;
 		}
 		return 150;
@@ -695,7 +724,8 @@ public class ListView extends WidgetGroup {
 
 		float amountY = this.amountY;
 		float centerY = maxY - y + areaHeight / 2 - height / 2;
-		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4)
+		if (amountY < centerY - areaHeight / 4
+				|| amountY > centerY + areaHeight / 4)
 			amountY = centerY;
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
@@ -815,7 +845,8 @@ public class ListView extends WidgetGroup {
 		this.clamp = clamp;
 	}
 
-	public void setupFadeScrollBars(float fadeAlphaSeconds, float fadeDelaySeconds) {
+	public void setupFadeScrollBars(float fadeAlphaSeconds,
+			float fadeDelaySeconds) {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
 	}
@@ -929,9 +960,9 @@ public class ListView extends WidgetGroup {
 			if (hit != null) {
 				CellWrapper oldCell = cells.get(selectedIndex);
 				if (oldCell.equals(child)) {
-					if(oldCell.isSelected()){
+					if (oldCell.isSelected()) {
 						oldCell.cancleCell();
-					}else{
+					} else {
 						oldCell.selectCell();
 					}
 				} else {
@@ -941,7 +972,8 @@ public class ListView extends WidgetGroup {
 				}
 				return hit;
 			} else {
-				System.out.println("what`s the fuck ,you hit....." + selectedIndex);
+				System.out.println("what`s the fuck ,you hit....."
+						+ selectedIndex);
 			}
 		}
 
@@ -995,7 +1027,8 @@ public class ListView extends WidgetGroup {
 		return selectedIndex;
 	}
 
-	public void setItems(Object[] objects, CellWrapper cell, int itemWidth, int itemHeight) {
+	public void setItems(Object[] objects, CellWrapper cell, int itemWidth,
+			int itemHeight) {
 		if (objects == null)
 			throw new IllegalArgumentException("items cannot be null.");
 
