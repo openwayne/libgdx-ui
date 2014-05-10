@@ -36,6 +36,7 @@ public class AdvancedImageButton extends ImageButton {
 	public void setStyle(ButtonStyle style) {
 		super.setStyle(style);
 		ImageButtonStyle bStyle = (ImageButtonStyle) style;
+		bStyle.imageChecked = bStyle.imageDown;
 		if (bStyle.imageDown == null) {
 			initListener();
 		}
