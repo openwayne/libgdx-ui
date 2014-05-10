@@ -2,6 +2,7 @@ package org.freyja.libgdx.cocostudio.ui.widget;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -12,19 +13,23 @@ public class AdvancedImageButton extends ImageButton {
 
 	public AdvancedImageButton(Drawable imageUp) {
 		super(imageUp);
+		getImage().setTouchable(Touchable.disabled);
 	}
 
 	public AdvancedImageButton(Drawable imageUp, Drawable imageDown) {
 		super(imageUp, imageDown);
+		getImage().setTouchable(Touchable.disabled);
 	}
 
 	public AdvancedImageButton(Drawable imageUp, Drawable imageDown,
 			Drawable imageChecked) {
 		super(imageUp, imageDown, imageChecked);
+		getImage().setTouchable(Touchable.disabled);
 	}
 
 	public AdvancedImageButton(ImageButtonStyle style) {
 		super(style);
+		getImage().setTouchable(Touchable.disabled);
 	}
 
 	@Override

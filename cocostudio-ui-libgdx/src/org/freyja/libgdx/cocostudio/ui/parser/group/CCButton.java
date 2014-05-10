@@ -9,6 +9,7 @@ import org.freyja.libgdx.cocostudio.ui.widget.TTFLabel;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 
 public class CCButton extends GroupParser {
@@ -35,6 +36,7 @@ public class CCButton extends GroupParser {
 			TTFLabel label = new TTFLabel(option.getText(), labelStyle);
 			label.setPosition((button.getWidth() - label.getWidth()) / 2,
 					(button.getHeight() - label.getHeight()) / 2);
+			label.setTouchable(Touchable.disabled);
 			button.addActor(label);
 		}
 		return button;
