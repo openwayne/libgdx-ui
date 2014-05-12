@@ -42,8 +42,8 @@ public class CCListView extends CCScrollView {
 			// scrollPane.setScrollingDisabled(false, false);
 			break;
 		}
-		scrollPane.setClamp(false);
-		scrollPane.setFlickScroll(option.isBounceEnable());
+		// scrollPane.setClamp(false);
+		// scrollPane.setFlickScroll(option.isBounceEnable());
 		return scrollPane;
 	}
 }

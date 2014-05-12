@@ -4,12 +4,9 @@ import org.freyja.libgdx.cocostudio.ui.widget.list.CellWrapper;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -51,30 +46,18 @@ public class ListView extends WidgetGroup {
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
-	private ActorGestureListener flickScrollListener;
 
 	boolean scrollX, scrollY;
-	float amountX, amountY;
-	float visualAmountX, visualAmountY;
 	float maxX, maxY;
-	boolean touchScrollH, touchScrollV;
 	final Vector2 lastPoint = new Vector2();
 	float areaWidth, areaHeight;
-	private boolean smoothScrolling = true;
-	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 	boolean cancelTouchFocus = true;
 
-	boolean flickScroll = true;
+	boolean isDraged = false;
+
 	float velocityX, velocityY;
-	float flingTimer;
-	private boolean overscrollX = true, overscrollY = true;
-	float flingTime = 1f;
-	private float overscrollDistance = 50, overscrollSpeedMin = 30,
+	private float overscrollDistance = 0, overscrollSpeedMin = 30,
 			overscrollSpeedMax = 200;
-	private boolean forceScrollX, forceScrollY;
-	private boolean disableX, disableY;
-	private boolean clamp = true;
-	int draggingPointer = -1;
 
 	public ListView() {
 		this(new ListViewStyle());
@@ -100,155 +83,62 @@ public class ListView extends WidgetGroup {
 		setWidth(150);
 		setHeight(150);
 
-		addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				hitItem(x, y, selectable);
-				super.clicked(event, x, y);
-			}
-		});
-
 		addCaptureListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (draggingPointer != -1)
-					return false;
+				isDraged = false;
+
 				if (pointer == 0 && button != 0)
 					return false;
 				getStage().setScrollFocus(ListView.this);
 
-				if (!flickScroll)
-					resetFade();
-
-				if (fadeAlpha == 0)
-					return false;
-
-				if (scrollX && scrollBounds.contains(x, y)) {
-					resetFade();
-					touchScrollH = true;
-					draggingPointer = pointer;
-					// setScrollX(amountX + areaWidth * (x < 0 ? -1 : 1));
-				}
-				if (scrollY && scrollBounds.contains(x, y)) {
-					resetFade();
-					touchScrollV = true;
-					draggingPointer = pointer;
-					// setScrollY(amountY + areaHeight * (y < 0 ? 1 : -1));
-				}
 				lastPoint.set(x, y);
 				return true;
 			}
 
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (pointer != draggingPointer)
+				// TODO 检测是否要滚动还是回弹
+
+				if (isDraged) {
+					isDraged = false;
 					return;
-				cancel();
+				}
+				hitItem(x, y, selectable);
 			}
 
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
+				isDraged = true;
 				event.stop();
+				float deltaX = 0;
+				float deltaY = 0;
 
-				if (pointer != draggingPointer)
-					return;
-				if (touchScrollH) {
-					float delta = x - lastPoint.x;
+				if (scrollX) {
+					deltaX = x - lastPoint.x;
+					System.out.println("x : " + deltaX);
+				}
+				if (scrollY) {
+					deltaY = y - lastPoint.y;
+					System.out.println("y : " + deltaY);
+				}
 
-					// setScrollPercentX((delta - cellTable.getX()) / maxX);
-					scrollX(-delta);
-				}
-				if (touchScrollV) {
-					float delta = y - lastPoint.y;
-					// setScrollPercentY(1 - ((delta - cellTable.getY()) /
-					// maxY));
-					scrollY(delta);
-				}
 				lastPoint.set(x, y);
+				setPos(deltaX, deltaY);
 			}
 
-			public boolean mouseMoved(InputEvent event, float x, float y) {
-				if (!flickScroll)
-					resetFade();
-				return false;
-			}
 		});
-
-		flickScrollListener = new ActorGestureListener() {
-			public void pan(InputEvent event, float x, float y, float deltaX,
-					float deltaY) {
-				resetFade();
-				amountX -= deltaX;
-				amountY += deltaY;
-				clamp();
-				cancelTouchFocusedChild(event);
-			}
-
-			public void fling(InputEvent event, float x, float y, int button) {
-				if (Math.abs(x) > 150) {
-					flingTimer = flingTime;
-					velocityX = x;
-					cancelTouchFocusedChild(event);
-				}
-				if (Math.abs(y) > 150) {
-					flingTimer = flingTime;
-					velocityY = -y;
-					cancelTouchFocusedChild(event);
-				}
-			}
-
-			public boolean handle(Event event) {
-				if (super.handle(event)) {
-					if (((InputEvent) event).getType() == InputEvent.Type.touchDown)
-						flingTimer = 0;
-					return true;
-				}
-				return false;
-			}
-		};
-		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
 			public boolean scrolled(InputEvent event, float x, float y,
 					int amount) {
-				resetFade();
 				if (scrollY)
-					setScrollY(amountY + getMouseWheelY() * amount);
+					setPos(0, getMouseWheelY() * amount);
 				else if (scrollX) //
-					setScrollX(amountX + getMouseWheelX() * amount);
+					setPos(getMouseWheelX() * amount, 0);
 				return true;
 			}
 		});
-	}
-
-	void resetFade() {
-		fadeAlpha = fadeAlphaSeconds;
-		fadeDelay = fadeDelaySeconds;
-	}
-
-	void cancelTouchFocusedChild(InputEvent event) {
-		if (!cancelTouchFocus)
-			return;
-		Stage stage = getStage();
-		if (stage != null)
-			stage.cancelTouchFocus(flickScrollListener, this);
-	}
-
-	/** If currently scrolling by tracking a touch down, stop scrolling. */
-	public void cancel() {
-		draggingPointer = -1;
-		touchScrollH = false;
-		touchScrollV = false;
-		flickScrollListener.getGestureDetector().cancel();
-	}
-
-	void clamp() {
-		if (!clamp)
-			return;
-		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance,
-				maxX + overscrollDistance) : MathUtils.clamp(amountX, 0, maxX));
-		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance,
-				maxY + overscrollDistance) : MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	public void setStyle(ListViewStyle style) {
@@ -266,6 +156,34 @@ public class ListView extends WidgetGroup {
 		return style;
 	}
 
+	private void setPos(float px, float py) {
+		float x = widget.getX();
+		float y = widget.getY();
+		if (scrollX) {
+			x += px;
+		}
+
+		if (scrollY) {
+			y += py;
+		}
+
+		// 需要判断是不是已经超过边界了,超过边界后最多overscrollDistance长度
+		if (x > overscrollDistance) {
+			x = overscrollDistance;
+		} else if (x < -(maxX - this.getWidth() + overscrollDistance)) {
+			x = -(maxX - this.getWidth() + overscrollDistance);
+		}
+
+		if (y < -overscrollDistance) {
+			y = -overscrollDistance;
+		} else if (y > maxY - this.getHeight() + overscrollDistance) {
+			y = maxY - this.getHeight() + overscrollDistance;
+		}
+
+		widget.setPosition(x, y);
+		scrollBounds.setPosition(x, y);
+	}
+
 	public void act(float delta) {
 		super.act(delta);
 
@@ -275,116 +193,6 @@ public class ListView extends WidgetGroup {
 			cell.selectCell();
 		}
 
-		boolean panning = flickScrollListener.getGestureDetector().isPanning();
-
-		if (fadeAlpha > 0 && !panning && !touchScrollH && !touchScrollV) {
-			fadeDelay -= delta;
-			if (fadeDelay <= 0)
-				fadeAlpha = Math.max(0, fadeAlpha - delta);
-		}
-
-		if (flingTimer > 0) {
-			resetFade();
-
-			float alpha = flingTimer / flingTime;
-			amountX -= velocityX * alpha * delta;
-			amountY -= velocityY * alpha * delta;
-			clamp();
-
-			// Stop fling if hit overscroll distance.
-			if (amountX == -overscrollDistance)
-				velocityX = 0;
-			if (amountX >= maxX + overscrollDistance)
-				velocityX = 0;
-			if (amountY == -overscrollDistance)
-				velocityY = 0;
-			if (amountY >= maxY + overscrollDistance)
-				velocityY = 0;
-
-			flingTimer -= delta;
-			if (flingTimer <= 0) {
-				velocityX = 0;
-				velocityY = 0;
-			}
-		}
-
-		if (smoothScrolling && flingTimer <= 0 && !touchScrollH
-				&& !touchScrollV && !panning) {
-			if (visualAmountX != amountX) {
-				if (visualAmountX < amountX)
-					visualScrollX(Math.min(
-							amountX,
-							visualAmountX
-									+ Math.max(150 * delta,
-											(amountX - visualAmountX) * 5
-													* delta)));
-				else
-					visualScrollX(Math.max(
-							amountX,
-							visualAmountX
-									- Math.max(150 * delta,
-											(visualAmountX - amountX) * 5
-													* delta)));
-			}
-			if (visualAmountY != amountY) {
-				if (visualAmountY < amountY)
-					visualScrollY(Math.min(
-							amountY,
-							visualAmountY
-									+ Math.max(150 * delta,
-											(amountY - visualAmountY) * 5
-													* delta)));
-				else
-					visualScrollY(Math.max(
-							amountY,
-							visualAmountY
-									- Math.max(150 * delta,
-											(visualAmountY - amountY) * 5
-													* delta)));
-			}
-		} else {
-			if (visualAmountX != amountX)
-				visualScrollX(amountX);
-			if (visualAmountY != amountY)
-				visualScrollY(amountY);
-		}
-
-		if (!panning) {
-			if (overscrollX && scrollX) {
-				if (amountX < 0) {
-					resetFade();
-					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
-							* -amountX / overscrollDistance)
-							* delta;
-					if (amountX > 0)
-						scrollX(0);
-				} else if (amountX > maxX) {
-					resetFade();
-					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
-							* -(maxX - amountX) / overscrollDistance)
-							* delta;
-					if (amountX < maxX)
-						scrollX(maxX);
-				}
-			}
-			if (overscrollY && scrollY) {
-				if (amountY < 0) {
-					resetFade();
-					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
-							* -amountY / overscrollDistance)
-							* delta;
-					if (amountY > 0)
-						scrollY(0);
-				} else if (amountY > maxY) {
-					resetFade();
-					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin)
-							* -(maxY - amountY) / overscrollDistance)
-							* delta;
-					if (amountY < maxY)
-						scrollY(maxY);
-				}
-			}
-		}
 	}
 
 	public void layout() {
@@ -419,24 +227,22 @@ public class ListView extends WidgetGroup {
 			widgetHeight = widget.getHeight();
 		}
 
-		// Determine if horizontal/vertical scrollbars are needed.
-		scrollX = forceScrollX || (widgetWidth > areaWidth && !disableX);
-		scrollY = forceScrollY || (widgetHeight > areaHeight && !disableY);
-
 		// Set the widget area bounds.
-		widgetAreaBounds
-				.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		// If the widget is smaller than the available space, make it take up
 		// the available space.
-		widgetWidth = disableX ? width : Math.max(areaWidth, widgetWidth);
-		widgetHeight = disableY ? height : Math.max(areaHeight, widgetHeight);
+		widgetWidth = Math.max(areaWidth, widgetWidth);
+		widgetHeight = Math.max(areaHeight, widgetHeight);
+
+		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, widgetWidth,
+				widgetHeight);
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
-
-		scrollX(MathUtils.clamp(amountX, 0, maxX));
-		scrollY(MathUtils.clamp(amountY, 0, maxY));
+		
+		// 修正可视区域
+		widgetCullingArea.width = areaWidth;
+		widgetCullingArea.height = areaHeight;
 
 		scrollBounds.set(cellTable.getX(), cellTable.getY(),
 				cellTable.getWidth(), cellTable.getHeight());
@@ -451,30 +257,19 @@ public class ListView extends WidgetGroup {
 		if (widget == null)
 			return;
 
-		validate();
+		// validate();
 
 		// Setup transform for this group.
 		applyTransform(batch, computeTransform());
 
 		// Calculate the widget's position depending on the scroll state and
 		// available widget area.
-		float y = widgetAreaBounds.y;
-		if (!scrollY)
-			y -= (int) maxY;
-		else
-			y -= (int) (maxY - visualAmountY);
-
-		float x = widgetAreaBounds.x;
-		if (scrollX)
-			x -= (int) visualAmountX;
-		widget.setPosition(x, y);
-		scrollBounds.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
 			widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
 			widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
-			widgetCullingArea.width = widgetAreaBounds.width;
-			widgetCullingArea.height = widgetAreaBounds.height;
+			// widgetCullingArea.width = areaWidth;
+			// widgetCullingArea.height = areaHeight;
 			((Cullable) widget).setCullingArea(widgetCullingArea);
 		}
 
@@ -495,10 +290,6 @@ public class ListView extends WidgetGroup {
 			drawChildren(batch, parentAlpha);
 			ScissorStack.popScissors();
 		}
-
-		// Render scrollbars and knobs on top.
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha
-				* Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
 
 		resetTransform(batch);
 	}
@@ -591,26 +382,6 @@ public class ListView extends WidgetGroup {
 		return super.hit(x, y, touchable);
 	}
 
-	/** Called whenever the x scroll amount is changed. */
-	protected void scrollX(float pixelsX) {
-		this.amountX = pixelsX;
-	}
-
-	/** Called whenever the y scroll amount is changed. */
-	protected void scrollY(float pixelsY) {
-		this.amountY = pixelsY;
-	}
-
-	/** Called whenever the visual x scroll amount is changed. */
-	protected void visualScrollX(float pixelsX) {
-		this.visualAmountX = pixelsX;
-	}
-
-	/** Called whenever the visual y scroll amount is changed. */
-	protected void visualScrollY(float pixelsY) {
-		this.visualAmountY = pixelsY;
-	}
-
 	/**
 	 * Returns the amount to scroll horizontally when the mouse wheel is
 	 * scrolled.
@@ -624,110 +395,6 @@ public class ListView extends WidgetGroup {
 	 */
 	protected float getMouseWheelY() {
 		return Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4;
-	}
-
-	public void setScrollX(float pixels) {
-		scrollX(MathUtils.clamp(pixels, 0, maxX));
-	}
-
-	/** Returns the x scroll position in pixels. */
-	public float getScrollX() {
-		return amountX;
-	}
-
-	public void setScrollY(float pixels) {
-		scrollY(MathUtils.clamp(pixels, 0, maxY));
-	}
-
-	/** Returns the y scroll position in pixels. */
-	public float getScrollY() {
-		return amountY;
-	}
-
-	/**
-	 * Sets the visual scroll amount equal to the scroll amount. This can be
-	 * used when setting the scroll amount without animating.
-	 */
-	public void updateVisualScroll() {
-		visualAmountX = amountX;
-		visualAmountY = amountY;
-	}
-
-	public float getVisualScrollX() {
-		return !scrollX ? 0 : visualAmountX;
-	}
-
-	public float getVisualScrollY() {
-		return !scrollY ? 0 : visualAmountY;
-	}
-
-	public float getScrollPercentX() {
-		return MathUtils.clamp(amountX / maxX, 0, 1);
-	}
-
-	public void setScrollPercentX(float percentX) {
-		scrollX(maxX * MathUtils.clamp(percentX, 0, 1));
-		System.out.println(percentX);
-	}
-
-	public float getScrollPercentY() {
-		return MathUtils.clamp(amountY / maxY, 0, 1);
-	}
-
-	public void setScrollPercentY(float percentY) {
-		scrollY(maxY * MathUtils.clamp(percentY, 0, 1));
-	}
-
-	public void setFlickScroll(boolean flickScroll) {
-		if (this.flickScroll == flickScroll)
-			return;
-		this.flickScroll = flickScroll;
-		if (flickScroll)
-			addListener(flickScrollListener);
-		else
-			removeListener(flickScrollListener);
-		invalidate();
-	}
-
-	/**
-	 * Sets the scroll offset so the specified rectangle is fully in view, if
-	 * possible. Coordinates are in the scroll pane widget's coordinate system.
-	 */
-	public void scrollTo(float x, float y, float width, float height) {
-		float amountX = this.amountX;
-		if (x + width > amountX + areaWidth)
-			amountX = x + width - areaWidth;
-		if (x < amountX)
-			amountX = x;
-		scrollX(MathUtils.clamp(amountX, 0, maxX));
-
-		float amountY = this.amountY;
-		if (amountY > maxY - y - height + areaHeight)
-			amountY = maxY - y - height + areaHeight;
-		if (amountY < maxY - y)
-			amountY = maxY - y;
-		scrollY(MathUtils.clamp(amountY, 0, maxY));
-	}
-
-	/**
-	 * Sets the scroll offset so the specified rectangle is fully in view and
-	 * centered vertically in the scroll pane, if possible. Coordinates are in
-	 * the scroll pane widget's coordinate system.
-	 */
-	public void scrollToCenter(float x, float y, float width, float height) {
-		float amountX = this.amountX;
-		if (x + width > amountX + areaWidth)
-			amountX = x + width - areaWidth;
-		if (x < amountX)
-			amountX = x;
-		scrollX(MathUtils.clamp(amountX, 0, maxX));
-
-		float amountY = this.amountY;
-		float centerY = maxY - y + areaHeight / 2 - height / 2;
-		if (amountY < centerY - areaHeight / 4
-				|| amountY > centerY + areaHeight / 4)
-			amountY = centerY;
-		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	/** Returns the maximum scroll value in the x direction. */
@@ -748,38 +415,8 @@ public class ListView extends WidgetGroup {
 		return scrollY;
 	}
 
-	/**
-	 * Disables scrolling in a direction. The widget will be sized to the
-	 * FlickScrollPane in the disabled direction.
-	 */
-	public void setScrollingDisabled(boolean x, boolean y) {
-		disableX = x;
-		disableY = y;
-	}
-
-	public boolean isDragging() {
-		return draggingPointer != -1;
-	}
-
-	public boolean isPanning() {
-		return flickScrollListener.getGestureDetector().isPanning();
-	}
-
-	public boolean isFlinging() {
-		return flingTimer > 0;
-	}
-
 	public void setVelocityX(float velocityX) {
 		this.velocityX = velocityX;
-	}
-
-	/** Gets the flick scroll y velocity. */
-	public float getVelocityX() {
-		if (flingTimer <= 0)
-			return 0;
-		float alpha = flingTimer / flingTime;
-		alpha = alpha * alpha * alpha;
-		return velocityX * alpha * alpha * alpha;
 	}
 
 	public void setVelocityY(float velocityY) {
@@ -789,16 +426,6 @@ public class ListView extends WidgetGroup {
 	/** Gets the flick scroll y velocity. */
 	public float getVelocityY() {
 		return velocityY;
-	}
-
-	/**
-	 * For flick scroll, if true the widget can be scrolled slightly past its
-	 * bounds and will animate back to its bounds when scrolling is stopped.
-	 * Default is true.
-	 */
-	public void setOverscroll(boolean overscrollX, boolean overscrollY) {
-		this.overscrollX = overscrollX;
-		this.overscrollY = overscrollY;
 	}
 
 	/**
@@ -817,42 +444,16 @@ public class ListView extends WidgetGroup {
 	 * bounds in that direction.
 	 */
 	public void setForceScroll(boolean x, boolean y) {
-		forceScrollX = x;
-		forceScrollY = y;
+		scrollX = x;
+		scrollY = y;
 	}
 
 	public boolean isForceScrollX() {
-		return forceScrollX;
+		return scrollX;
 	}
 
 	public boolean isForceScrollY() {
-		return forceScrollY;
-	}
-
-	/**
-	 * For flick scroll, sets the amount of time in seconds that a fling will
-	 * continue to scroll. Default is 1.
-	 */
-	public void setFlingTime(float flingTime) {
-		this.flingTime = flingTime;
-	}
-
-	/**
-	 * For flick scroll, prevents scrolling out of the widget's bounds. Default
-	 * is true.
-	 */
-	public void setClamp(boolean clamp) {
-		this.clamp = clamp;
-	}
-
-	public void setupFadeScrollBars(float fadeAlphaSeconds,
-			float fadeDelaySeconds) {
-		this.fadeAlphaSeconds = fadeAlphaSeconds;
-		this.fadeDelaySeconds = fadeDelaySeconds;
-	}
-
-	public void setSmoothScrolling(boolean smoothScrolling) {
-		this.smoothScrolling = smoothScrolling;
+		return scrollY;
 	}
 
 	/**
