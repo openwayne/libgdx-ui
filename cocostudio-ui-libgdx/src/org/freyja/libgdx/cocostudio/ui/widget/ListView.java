@@ -161,25 +161,25 @@ public class ListView extends WidgetGroup {
 		float y = widget.getY();
 		if (scrollX) {
 			x += px;
+			// 需要判断是不是已经超过边界了,超过边界后最多overscrollDistance长度
+			if (x > overscrollDistance) {
+				x = overscrollDistance;
+			} else if (x < -(maxX + overscrollDistance)) {
+				x = -(maxX + overscrollDistance);
+			}
 		}
 
 		if (scrollY) {
 			y += py;
+			if (y < -overscrollDistance) {
+				y = -overscrollDistance;
+			} else if (y > maxY + overscrollDistance) {
+				y = maxY + overscrollDistance;
+			}
 		}
 
-		// 需要判断是不是已经超过边界了,超过边界后最多overscrollDistance长度
-		if (x > overscrollDistance) {
-			x = overscrollDistance;
-		} else if (x < -(maxX - this.getWidth() + overscrollDistance)) {
-			x = -(maxX - this.getWidth() + overscrollDistance);
-		}
 
-		if (y < -overscrollDistance) {
-			y = -overscrollDistance;
-		} else if (y > maxY - this.getHeight() + overscrollDistance) {
-			y = maxY - this.getHeight() + overscrollDistance;
-		}
-
+		System.out.println("widget x -> " + x + ", y -> " + y);
 		widget.setPosition(x, y);
 		scrollBounds.setPosition(x, y);
 	}
@@ -234,18 +234,14 @@ public class ListView extends WidgetGroup {
 		widgetWidth = Math.max(areaWidth, widgetWidth);
 		widgetHeight = Math.max(areaHeight, widgetHeight);
 
-		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, widgetWidth,
-				widgetHeight);
+		widgetAreaBounds
+				.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
-		
-		// 修正可视区域
-		widgetCullingArea.width = areaWidth;
-		widgetCullingArea.height = areaHeight;
 
-		scrollBounds.set(cellTable.getX(), cellTable.getY(),
-				cellTable.getWidth(), cellTable.getHeight());
+		scrollBounds.set(cellTable.getX(), cellTable.getY(), areaWidth,
+				areaHeight);
 
 		widget.setSize(widgetWidth, widgetHeight);
 		if (widget instanceof Layout)
@@ -268,8 +264,8 @@ public class ListView extends WidgetGroup {
 		if (widget instanceof Cullable) {
 			widgetCullingArea.x = -widget.getX() + widgetAreaBounds.x;
 			widgetCullingArea.y = -widget.getY() + widgetAreaBounds.y;
-			// widgetCullingArea.width = areaWidth;
-			// widgetCullingArea.height = areaHeight;
+			widgetCullingArea.width = widgetAreaBounds.width;
+			widgetCullingArea.height = widgetAreaBounds.height;
 			((Cullable) widget).setCullingArea(widgetCullingArea);
 		}
 
