@@ -596,19 +596,22 @@ public class ListView extends WidgetGroup {
 	}
 
 	private Vector2 hitPot = new Vector2();
-	private Rectangle hitRect = new Rectangle();
+	private Vector2 listPot = new Vector2();
 	private int oldIndex;
 
 	private Actor hitItem(float x, float y, boolean touchable) {
-		hitRect.set(0, 0, getWidth(), getHeight());
+		cellTable.parentToLocalCoordinates(listPot.set(x, y));
+		
+		Actor hitActor = cellTable.hit(listPot.x, listPot.y, touchable);
+		
 		if (touchable && getTouchable() == Touchable.disabled)
 			return null;
 		for (int i = 0; i < cells.size; i++) {
 			CellWrapper child = cells.get(i);
 			Actor dos = child.getGroup();
-			if (!dos.isVisible() || !hitRect.contains(x, y))
+			if (hitActor.equals(dos) == false)
 				continue;
-			dos.parentToLocalCoordinates(hitPot.set(x, y));
+			
 
 			Actor hit = dos.hit(hitPot.x, hitPot.y, touchable);
 			if (hit != null) {
