@@ -689,7 +689,7 @@ public class ListView extends WidgetGroup {
 
 		this.itemWidth = itemWidth;
 		this.itemHeight = itemHeight;
-		items = objects.clone();
+		items = objects;
 		selectedIndex = 0;
 
 		cells.clear();
