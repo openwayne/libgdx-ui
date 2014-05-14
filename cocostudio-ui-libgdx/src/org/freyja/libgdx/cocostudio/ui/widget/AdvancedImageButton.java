@@ -1,5 +1,6 @@
 package org.freyja.libgdx.cocostudio.ui.widget;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class AdvancedImageButton extends ImageButton {
 	private boolean isBig = false;
+	private TTFLabel label = null;
 
 	public AdvancedImageButton(Drawable imageUp) {
 		super(imageUp);
@@ -30,6 +32,22 @@ public class AdvancedImageButton extends ImageButton {
 	public AdvancedImageButton(ImageButtonStyle style) {
 		super(style);
 		getImage().setTouchable(Touchable.disabled);
+	}
+	
+	public void addText(String txt, TTFLabelStyle labelStyle) {
+		label = new TTFLabel(txt, labelStyle);
+		label.setPosition((getWidth() - label.getWidth()) / 2,
+				(getHeight() - label.getHeight()) / 2);
+		label.setTouchable(Touchable.disabled);
+		addActor(label);
+	}
+	
+	public void modifyText(String txt) {
+		if(label == null) {
+			Gdx.app.error("AdvancedImageButton", "set text to an null label");
+			return;
+		}
+		label.setText(txt);
 	}
 
 	@Override

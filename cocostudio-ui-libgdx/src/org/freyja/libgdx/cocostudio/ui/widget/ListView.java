@@ -75,7 +75,7 @@ public class ListView extends WidgetGroup {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
 
-		cellTable = new Table();
+		cellTable = new CellTable();
 		cellTable.top().left().pad(5);
 
 		this.style = style;
@@ -177,7 +177,6 @@ public class ListView extends WidgetGroup {
 				y = maxY + overscrollDistance;
 			}
 		}
-
 
 		System.out.println("widget x -> " + x + ", y -> " + y);
 		widget.setPosition(x, y);
@@ -498,7 +497,7 @@ public class ListView extends WidgetGroup {
 	}
 
 	private boolean isSelectedDirty = false;
-	private Table cellTable;
+	private CellTable cellTable;
 	private boolean selectable = true;
 
 	private boolean horv = true;
@@ -601,9 +600,9 @@ public class ListView extends WidgetGroup {
 
 	private Actor hitItem(float x, float y, boolean touchable) {
 		cellTable.parentToLocalCoordinates(listPot.set(x, y));
-		
+
 		Actor hitActor = cellTable.hit(listPot.x, listPot.y, touchable);
-		
+
 		if (touchable && getTouchable() == Touchable.disabled)
 			return null;
 		for (int i = 0; i < cells.size; i++) {
@@ -611,7 +610,6 @@ public class ListView extends WidgetGroup {
 			Actor dos = child.getGroup();
 			if (hitActor.equals(dos) == false)
 				continue;
-			
 
 			Actor hit = dos.hit(hitPot.x, hitPot.y, touchable);
 			if (hit != null) {
@@ -718,5 +716,42 @@ public class ListView extends WidgetGroup {
 
 	public Object[] getItems() {
 		return items;
+	}
+
+	private class CellTable extends Table {
+		private Vector2 cPoint = new Vector2();
+
+		@Override
+		public Actor hit(float x, float y, boolean touchable) {
+			if (this.getClip()) {
+				if (touchable && getTouchable() == Touchable.disabled)
+					return null;
+				if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+					return null;
+			}
+
+			if (touchable && getTouchable() == Touchable.disabled)
+				return null;
+			Array<Actor> children = this.getChildren();
+			for (int i = children.size - 1; i >= 0; i--) {
+				Actor child = children.get(i);
+				if (!child.isVisible())
+					continue;
+				child.parentToLocalCoordinates(cPoint.set(x, y));
+				Actor hit = null;
+
+				if (child.getTouchable() == Touchable.enabled) {
+					if (cPoint.x >= 0 && cPoint.x < child.getWidth()
+							&& cPoint.y >= 0
+							&& cPoint.y < child.getHeight()) {
+						hit = child;
+						child.hit(cPoint.x, cPoint.y, touchable);
+					}
+				}
+				if (hit != null)
+					return hit;
+			}
+			return null;
+		}
 	}
 }

@@ -15,7 +15,7 @@ public abstract class CellWrapper {
 		this._editor = new CocoStudioUIEditor(file, null, null, null, null);
 		this._group = this.getEditor().createGroup();
 	}
-
+	
 	public CocoStudioUIEditor getEditor() {
 		return _editor;
 	}
@@ -61,5 +61,4 @@ public abstract class CellWrapper {
 	public boolean isSelected() {
 		return isSelected;
 	}
-
 }
