@@ -602,9 +602,13 @@ public class ListView extends WidgetGroup {
 		cellTable.parentToLocalCoordinates(listPot.set(x, y));
 
 		Actor hitActor = cellTable.hit(listPot.x, listPot.y, touchable);
-
+		
+		if (hitActor == null) {
+			return null;
+		}
 		if (touchable && getTouchable() == Touchable.disabled)
 			return null;
+		
 		for (int i = 0; i < cells.size; i++) {
 			CellWrapper child = cells.get(i);
 			Actor dos = child.getGroup();
