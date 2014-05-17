@@ -180,7 +180,7 @@ public class CocoStudioUIEditor {
 		}
 		return array.get(0);
 	}
-	
+
 	public Actor findActorByTag(int tag) {
 		return _tags.get(tag);
 	}

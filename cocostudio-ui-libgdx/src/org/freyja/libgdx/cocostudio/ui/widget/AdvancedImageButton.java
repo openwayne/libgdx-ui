@@ -48,6 +48,8 @@ public class AdvancedImageButton extends ImageButton {
 			return;
 		}
 		label.setText(txt);
+		label.setPosition((getWidth() - label.getWidth()) / 2,
+				(getHeight() - label.getHeight()) / 2);
 	}
 
 	@Override
