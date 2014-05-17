@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
 
 /**
  * A group that scrolls a child widget using scrollbars and/or mouse or touch
@@ -567,6 +565,16 @@ public class ListView extends WidgetGroup {
 		cellTable.pack();
 	}
 
+	public Actor hit(float x, float y, boolean touchable) {
+		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+			return null;
+		if (scrollX && scrollBounds.contains(x, y))
+			return this;
+		if (scrollY && scrollBounds.contains(x, y))
+			return this;
+		return super.hit(x, y, touchable);
+	}
+
 	private void layoutTable() {
 		cellTable.clear();
 		for (int i = 0; i < cells.size; i++) {
@@ -594,13 +602,13 @@ public class ListView extends WidgetGroup {
 		cellTable.parentToLocalCoordinates(listPot.set(x, y));
 
 		Actor hitActor = cellTable.hit(listPot.x, listPot.y, touchable);
-		
+
 		if (hitActor == null) {
 			return null;
 		}
 		if (touchable && getTouchable() == Touchable.disabled)
 			return null;
-		
+
 		for (int i = 0; i < cells.size; i++) {
 			CellWrapper child = cells.get(i);
 			Actor dos = child.getGroup();
@@ -621,7 +629,7 @@ public class ListView extends WidgetGroup {
 					child.selectCell();
 					selectedIndex = child.getIndex();
 				}
-				
+
 				return hit;
 			}
 		}
@@ -713,39 +721,39 @@ public class ListView extends WidgetGroup {
 	}
 
 	private class CellTable extends Table {
-//		private Vector2 cPoint = new Vector2();
-//
-//		@Override
-//		public Actor hit(float x, float y, boolean touchable) {
-//			if (this.getClip()) {
-//				if (touchable && getTouchable() == Touchable.disabled)
-//					return null;
-//				if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
-//					return null;
-//			}
-//
-//			if (touchable && getTouchable() == Touchable.disabled)
-//				return null;
-//			Array<Actor> children = this.getChildren();
-//			for (int i = children.size - 1; i >= 0; i--) {
-//				Actor child = children.get(i);
-//				if (!child.isVisible())
-//					continue;
-//				child.parentToLocalCoordinates(cPoint.set(x, y));
-//				Actor hit = null;
-//
-//				if (child.getTouchable() == Touchable.enabled) {
-//					if (cPoint.x >= 0 && cPoint.x < child.getWidth()
-//							&& cPoint.y >= 0
-//							&& cPoint.y < child.getHeight()) {
-//						hit = child;
-//						child.hit(cPoint.x, cPoint.y, touchable);
-//					}
-//				}
-//				if (hit != null)
-//					return hit;
-//			}
-//			return null;
-//		}
+		// private Vector2 cPoint = new Vector2();
+		//
+		// @Override
+		// public Actor hit(float x, float y, boolean touchable) {
+		// if (this.getClip()) {
+		// if (touchable && getTouchable() == Touchable.disabled)
+		// return null;
+		// if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+		// return null;
+		// }
+		//
+		// if (touchable && getTouchable() == Touchable.disabled)
+		// return null;
+		// Array<Actor> children = this.getChildren();
+		// for (int i = children.size - 1; i >= 0; i--) {
+		// Actor child = children.get(i);
+		// if (!child.isVisible())
+		// continue;
+		// child.parentToLocalCoordinates(cPoint.set(x, y));
+		// Actor hit = null;
+		//
+		// if (child.getTouchable() == Touchable.enabled) {
+		// if (cPoint.x >= 0 && cPoint.x < child.getWidth()
+		// && cPoint.y >= 0
+		// && cPoint.y < child.getHeight()) {
+		// hit = child;
+		// child.hit(cPoint.x, cPoint.y, touchable);
+		// }
+		// }
+		// if (hit != null)
+		// return hit;
+		// }
+		// return null;
+		// }
 	}
 }
