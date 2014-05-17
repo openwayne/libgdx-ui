@@ -14,6 +14,7 @@ public abstract class CellWrapper {
 	public void init(FileHandle file) {
 		this._editor = new CocoStudioUIEditor(file, null, null, null, null);
 		this._group = this.getEditor().createGroup();
+		_group.setName(file.name());
 	}
 	
 	public CocoStudioUIEditor getEditor() {

@@ -3,12 +3,7 @@ package org.freyja.libgdx.cocostudio.ui.widget;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /**
@@ -34,32 +29,32 @@ public class PageView extends Table {
 	 */
 	private HashMap<String, Group> cacheNameActor = new HashMap<String, Group>();
 
+	private int curIdx = 0;
+
 	/**
 	 * 把显示区域移动到第idx
 	 * 
 	 * @param idx
 	 */
 	public void setPageIdx(int idx) {
-		Iterator<String> it=cacheNameActor.keySet().iterator();
-		while(it.hasNext()){
-			String key=it.next();
-			Group group=cacheNameActor.get(key);
+		int moveIdx = curIdx - idx;
+		curIdx = idx;
+		Iterator<String> it = cacheNameActor.keySet().iterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			Group group = cacheNameActor.get(key);
 			group.setVisible(false);
-			
-			
+			group.setPosition(group.getX() + getWidth() * moveIdx, group.getY());
 		}
 		Group panel = cacheNameActor.get(cacheIdxName.get(idx));
 		panel.setVisible(true);
-		// 移动到某个panel
-		panel.setPosition(getWidth(), 0);
-		panel.addAction(Actions.moveTo(0, 0, 0.3f, Interpolation.bounceIn));
-		
-		
+
 	}
 
 	@Override
 	public void setSize(float width, float height) {
-		this.setCullingArea(new Rectangle(0, 0, width, height));
+		// this.setClip(true);
+		// this.setCullingArea(new Rectangle(0, 0, width, height));
 		super.setSize(width, height);
 	}
 
