@@ -50,4 +50,18 @@ public class ImageBtnGroup extends ButtonGroup {
 		Button button = buttons.get(idx);
 		button.setChecked(true);
 	}
+	
+	/**
+	 * 返回ImageBtnGroup中处于被选中状态Button的index
+	 * 
+	 * @return
+	 */
+	public int getCheckedIdx(){
+		for (int i = 0; i < btns.length; i++) {
+			if (btns[i].isChecked()) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }
