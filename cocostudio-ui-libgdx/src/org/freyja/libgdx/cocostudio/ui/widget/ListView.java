@@ -567,16 +567,6 @@ public class ListView extends WidgetGroup {
 		// getHeight() - cellTable.getPrefHeight());
 	}
 
-	public Actor hit(float x, float y, boolean touchable) {
-		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
-			return null;
-		if (scrollX && scrollBounds.contains(x, y))
-			return this;
-		if (scrollY && scrollBounds.contains(x, y))
-			return this;
-		return super.hit(x, y, touchable);
-	}
-
 	private void layoutTable() {
 		cellTable.clear();
 		for (int i = 0; i < cells.size; i++) {
@@ -747,15 +737,16 @@ public class ListView extends WidgetGroup {
 				Actor hit = null;
 
 				if (child.getTouchable() == Touchable.enabled) {
-					if (cPoint.x >= 0 && cPoint.x < child.getWidth()
-							&& cPoint.y >= 0 && cPoint.y < child.getHeight()) {
-						hit = child;
-						child.hit(cPoint.x, cPoint.y, touchable);
-					}
+					hit = child.hit(cPoint.x, cPoint.y, touchable);
 				}
-				if (hit != null)
+				if (hit != null){
 					return hit;
+				}
 			}
+			if (scrollX && scrollBounds.contains(x, y))
+				return this;
+			if (scrollY && scrollBounds.contains(x, y))
+				return this;
 			return null;
 		}
 	}
