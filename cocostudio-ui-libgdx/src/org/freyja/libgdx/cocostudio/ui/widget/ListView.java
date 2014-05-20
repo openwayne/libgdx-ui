@@ -570,10 +570,6 @@ public class ListView extends WidgetGroup {
 	public Actor hit(float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
 			return null;
-		if (scrollX && scrollBounds.contains(x, y))
-			return this;
-		if (scrollY && scrollBounds.contains(x, y))
-			return this;
 		return super.hit(x, y, touchable);
 	}
 
