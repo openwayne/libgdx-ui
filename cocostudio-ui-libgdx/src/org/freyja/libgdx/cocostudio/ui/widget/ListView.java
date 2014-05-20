@@ -567,6 +567,12 @@ public class ListView extends WidgetGroup {
 		// getHeight() - cellTable.getPrefHeight());
 	}
 
+	public Actor hit(float x, float y, boolean touchable) {
+		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+			return null;
+		return super.hit(x, y, touchable);
+	}
+
 	private void layoutTable() {
 		cellTable.clear();
 		for (int i = 0; i < cells.size; i++) {
