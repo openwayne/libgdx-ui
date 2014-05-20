@@ -584,7 +584,7 @@ public class ListView extends WidgetGroup {
 				cellTable.row();
 			}
 		}
-		cellTable.pack();
+		cellTable.layout();
 		// cellTable.setPosition(cellTable.getX(),
 		// getHeight() - cellTable.getPrefHeight());
 
