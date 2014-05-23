@@ -14,13 +14,22 @@ public class AdvancedImageButton extends ImageButton {
 	private TTFLabel label = null;
 
 	public AdvancedImageButton(Drawable imageUp) {
-		super(imageUp);
-		getImage().setTouchable(Touchable.disabled);
+		this(imageUp, null);
+	}
+	
+	@Override
+	public void setSize(float width, float height) {
+		getImage().setSize(width, height);
+		this.getImage().setOrigin(width / 2, height / 2);
+		super.setSize(width, height);
+		if(label != null) {
+			label.setPosition((getWidth() - label.getWidth()) / 2,
+					(getHeight() - label.getHeight()) / 2);
+		}
 	}
 
 	public AdvancedImageButton(Drawable imageUp, Drawable imageDown) {
-		super(imageUp, imageDown);
-		getImage().setTouchable(Touchable.disabled);
+		this(imageUp, imageDown, null);
 	}
 
 	public AdvancedImageButton(Drawable imageUp, Drawable imageDown,
@@ -68,6 +77,7 @@ public class AdvancedImageButton extends ImageButton {
 			return;
 		}
 		this.getImage().setOrigin(up.getMinWidth() / 2, up.getMinHeight() / 2);
+
 		this.addListener(new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,
@@ -90,7 +100,6 @@ public class AdvancedImageButton extends ImageButton {
 			return;
 		}
 		isBig = true;
-		setScale(1.5f);
 		getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
 	}
 
@@ -99,7 +108,6 @@ public class AdvancedImageButton extends ImageButton {
 			return;
 		}
 		isBig = false;
-		setScale(1.0f);
 
 		getImage().addAction(Actions.scaleTo(1, 1, 0.1f));
 	}

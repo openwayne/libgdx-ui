@@ -30,7 +30,6 @@ public class CCPanel extends GroupParser {
 	public Actor parse(CocoStudioUIEditor editor, CCWidget widget,
 			CCOption option) {
 		Table table = new Table();
-
 		if (option.getColorType() == 0) {// 无颜色
 
 		} else if (option.getColorType() == 1) {// 单色
@@ -54,17 +53,8 @@ public class CCPanel extends GroupParser {
 			Drawable tr = editor.findDrawable(option, option
 					.getBackGroundImageData().getPath());
 			if (tr != null) {
-//				Image bg = new Image(tr);
-//				bg.setPosition((option.getWidth() - bg.getWidth()) / 2,
-//						(option.getHeight() - bg.getHeight()) / 2);
-//				// bg.setFillParent(true);
-//				bg.setTouchable(Touchable.disabled);
-//
-//				bg.setColor(option.getColorR() / 255f,
-//						option.getColorG() / 255f, option.getColorB() / 255f,
-//						option.getOpacity() / 255f);
-//				bg.setSize(option.getWidth(), option.getHeight());
-//				table.addActor(bg);
+				tr.setMinHeight(option.getHeight());
+				tr.setMinWidth(option.getWidth());
 				table.setBackground(tr);
 			}
 		}

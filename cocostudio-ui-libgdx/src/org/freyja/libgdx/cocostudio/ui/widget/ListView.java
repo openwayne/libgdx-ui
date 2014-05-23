@@ -56,8 +56,6 @@ public class ListView extends WidgetGroup {
 	boolean isDraged = false;
 
 	float velocityX, velocityY;
-	private float overscrollDistance = 0, overscrollSpeedMin = 30,
-			overscrollSpeedMax = 200;
 
 	public ListView() {
 		this(new ListViewStyle());
@@ -162,25 +160,33 @@ public class ListView extends WidgetGroup {
 		if (scrollX) {
 			x += px;
 			// 需要判断是不是已经超过边界了,超过边界后最多overscrollDistance长度
-			if (x > overscrollDistance) {
-				x = overscrollDistance;
-			} else if (x < -(maxX + overscrollDistance)) {
-				x = -(maxX + overscrollDistance);
+			if (x > 0) {
+				x = 0;
+			} else if (x < -(maxX)) {
+				x = -(maxX);
 			}
 		}
 
 		if (scrollY) {
 			y += py;
-			if (y < -overscrollDistance) {
-				y = -overscrollDistance;
-			} else if (y > maxY + overscrollDistance) {
-				y = maxY + overscrollDistance;
+			if (y < -maxY) {
+				y = -maxY;
+			} else if (y > 0) {
+				y = 0;
 			}
 		}
 
 		System.out.println("widget x -> " + x + ", y -> " + y);
 		widget.setPosition(x, y);
 		scrollBounds.setPosition(x, y);
+	}
+
+	public void scrollToStartY() {
+		widget.setPosition(widget.getX(), -maxY);
+	}
+
+	public void scrollToStartX() {
+		widget.setPosition(0, widget.getY());
 	}
 
 	public void act(float delta) {
@@ -239,6 +245,8 @@ public class ListView extends WidgetGroup {
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
 
+		scrollToStartY();
+		
 		scrollBounds.set(cellTable.getX(), cellTable.getY(), areaWidth,
 				areaHeight);
 
@@ -414,16 +422,6 @@ public class ListView extends WidgetGroup {
 	}
 
 	/**
-	 * For flick scroll, sets the overscroll distance in pixels and the speed it
-	 * returns to the widget's bounds in seconds. Default is 50, 30, 200.
-	 */
-	public void setupOverscroll(float distance, float speedMin, float speedMax) {
-		overscrollDistance = distance;
-		overscrollSpeedMin = speedMin;
-		overscrollSpeedMax = speedMax;
-	}
-
-	/**
 	 * Forces enabling scrollbars (for non-flick scroll) and overscrolling (for
 	 * flick scroll) in a direction, even if the contents do not exceed the
 	 * bounds in that direction.
@@ -499,6 +497,7 @@ public class ListView extends WidgetGroup {
 	 * 
 	 * @param col
 	 */
+	@Deprecated
 	public void setCol(int col) {
 		if (col <= v) {
 			return;
@@ -570,10 +569,6 @@ public class ListView extends WidgetGroup {
 	public Actor hit(float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
 			return null;
-		if (scrollX && scrollBounds.contains(x, y))
-			return this;
-		if (scrollY && scrollBounds.contains(x, y))
-			return this;
 		return super.hit(x, y, touchable);
 	}
 
@@ -588,10 +583,7 @@ public class ListView extends WidgetGroup {
 				cellTable.row();
 			}
 		}
-		cellTable.pack();
-		// cellTable.setPosition(cellTable.getX(),
-		// getHeight() - cellTable.getPrefHeight());
-
+		cellTable.layout();
 	}
 
 	public void setSelectable(boolean value) {
