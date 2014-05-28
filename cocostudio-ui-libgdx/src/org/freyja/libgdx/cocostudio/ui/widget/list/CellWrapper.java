@@ -33,7 +33,7 @@ public abstract class CellWrapper {
 		return _idx;
 	}
 
-	public Group getGroup() {
+	public final Group getGroup() {
 		return _group;
 	}
 
