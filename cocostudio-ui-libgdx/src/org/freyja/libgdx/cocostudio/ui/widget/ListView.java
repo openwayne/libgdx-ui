@@ -75,7 +75,6 @@ public class ListView extends WidgetGroup {
 
 		cellTable = new CellTable();
 		cellTable.top().left().pad(5);
-
 		this.style = style;
 		setWidget(cellTable);
 		setWidth(150);
@@ -139,6 +138,10 @@ public class ListView extends WidgetGroup {
 		});
 	}
 
+	public void setPad(int gapNum) {
+		cellTable.top().left().pad(gapNum);
+	}
+	
 	public void setStyle(ListViewStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
@@ -594,6 +597,19 @@ public class ListView extends WidgetGroup {
 	private Vector2 hitPot = new Vector2();
 	private Vector2 listPot = new Vector2();
 	private int oldIndex;
+	private boolean isTaggle = true;
+
+	public boolean isTaggle() {
+		return isTaggle;
+	}
+
+	/**
+	 * 点中同一个cell的时候是不是要取消
+	 * @param isTaggle true 可取消 false 不可取消
+	 */
+	public void setTaggle(boolean isTaggle) {
+		this.isTaggle = isTaggle;
+	}
 
 	private Actor hitItem(float x, float y, boolean touchable) {
 		cellTable.parentToLocalCoordinates(listPot.set(x, y));
@@ -616,6 +632,9 @@ public class ListView extends WidgetGroup {
 			if (hit != null) {
 				CellWrapper oldCell = cells.get(selectedIndex);
 				if (oldCell.equals(child)) {
+					if(!isTaggle) {
+						return hit;
+					}
 					if (oldCell.isSelected()) {
 						oldCell.cancleCell();
 					} else {
