@@ -16,6 +16,17 @@ public class AdvancedImageButton extends ImageButton {
 	public AdvancedImageButton(Drawable imageUp) {
 		this(imageUp, null);
 	}
+	
+	@Override
+	public void setSize(float width, float height) {
+		getImage().setSize(width, height);
+		this.getImage().setOrigin(width / 2, height / 2);
+		super.setSize(width, height);
+		if(label != null) {
+			label.setPosition((getWidth() - label.getWidth()) / 2,
+					(getHeight() - label.getHeight()) / 2);
+		}
+	}
 
 	public AdvancedImageButton(Drawable imageUp, Drawable imageDown) {
 		this(imageUp, imageDown, null);
@@ -66,6 +77,7 @@ public class AdvancedImageButton extends ImageButton {
 			return;
 		}
 		this.getImage().setOrigin(up.getMinWidth() / 2, up.getMinHeight() / 2);
+
 		this.addListener(new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,

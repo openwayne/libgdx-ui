@@ -56,8 +56,6 @@ public class ListView extends WidgetGroup {
 	boolean isDraged = false;
 
 	float velocityX, velocityY;
-	private float overscrollDistance = 0, overscrollSpeedMin = 30,
-			overscrollSpeedMax = 200;
 
 	public ListView() {
 		this(new ListViewStyle());
@@ -77,7 +75,6 @@ public class ListView extends WidgetGroup {
 
 		cellTable = new CellTable();
 		cellTable.top().left().pad(5);
-
 		this.style = style;
 		setWidget(cellTable);
 		setWidth(150);
@@ -141,6 +138,10 @@ public class ListView extends WidgetGroup {
 		});
 	}
 
+	public void setPad(int gapNum) {
+		cellTable.top().left().pad(gapNum);
+	}
+	
 	public void setStyle(ListViewStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
@@ -162,25 +163,33 @@ public class ListView extends WidgetGroup {
 		if (scrollX) {
 			x += px;
 			// 需要判断是不是已经超过边界了,超过边界后最多overscrollDistance长度
-			if (x > overscrollDistance) {
-				x = overscrollDistance;
-			} else if (x < -(maxX + overscrollDistance)) {
-				x = -(maxX + overscrollDistance);
+			if (x > 0) {
+				x = 0;
+			} else if (x < -(maxX)) {
+				x = -(maxX);
 			}
 		}
 
 		if (scrollY) {
 			y += py;
-			if (y < -overscrollDistance) {
-				y = -overscrollDistance;
-			} else if (y > maxY + overscrollDistance) {
-				y = maxY + overscrollDistance;
+			if (y < -maxY) {
+				y = -maxY;
+			} else if (y > 0) {
+				y = 0;
 			}
 		}
 
 		System.out.println("widget x -> " + x + ", y -> " + y);
 		widget.setPosition(x, y);
 		scrollBounds.setPosition(x, y);
+	}
+
+	public void scrollToStartY() {
+		widget.setPosition(widget.getX(), -maxY);
+	}
+
+	public void scrollToStartX() {
+		widget.setPosition(0, widget.getY());
 	}
 
 	public void act(float delta) {
@@ -239,6 +248,8 @@ public class ListView extends WidgetGroup {
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
 
+		scrollToStartY();
+		
 		scrollBounds.set(cellTable.getX(), cellTable.getY(), areaWidth,
 				areaHeight);
 
@@ -414,16 +425,6 @@ public class ListView extends WidgetGroup {
 	}
 
 	/**
-	 * For flick scroll, sets the overscroll distance in pixels and the speed it
-	 * returns to the widget's bounds in seconds. Default is 50, 30, 200.
-	 */
-	public void setupOverscroll(float distance, float speedMin, float speedMax) {
-		overscrollDistance = distance;
-		overscrollSpeedMin = speedMin;
-		overscrollSpeedMax = speedMax;
-	}
-
-	/**
 	 * Forces enabling scrollbars (for non-flick scroll) and overscrolling (for
 	 * flick scroll) in a direction, even if the contents do not exceed the
 	 * bounds in that direction.
@@ -499,6 +500,7 @@ public class ListView extends WidgetGroup {
 	 * 
 	 * @param col
 	 */
+	@Deprecated
 	public void setCol(int col) {
 		if (col <= v) {
 			return;
@@ -584,10 +586,7 @@ public class ListView extends WidgetGroup {
 				cellTable.row();
 			}
 		}
-		cellTable.pack();
-		// cellTable.setPosition(cellTable.getX(),
-		// getHeight() - cellTable.getPrefHeight());
-
+		cellTable.layout();
 	}
 
 	public void setSelectable(boolean value) {
@@ -598,6 +597,19 @@ public class ListView extends WidgetGroup {
 	private Vector2 hitPot = new Vector2();
 	private Vector2 listPot = new Vector2();
 	private int oldIndex;
+	private boolean isTaggle = true;
+
+	public boolean isTaggle() {
+		return isTaggle;
+	}
+
+	/**
+	 * 点中同一个cell的时候是不是要取消
+	 * @param isTaggle true 可取消 false 不可取消
+	 */
+	public void setTaggle(boolean isTaggle) {
+		this.isTaggle = isTaggle;
+	}
 
 	private Actor hitItem(float x, float y, boolean touchable) {
 		cellTable.parentToLocalCoordinates(listPot.set(x, y));
@@ -620,6 +632,9 @@ public class ListView extends WidgetGroup {
 			if (hit != null) {
 				CellWrapper oldCell = cells.get(selectedIndex);
 				if (oldCell.equals(child)) {
+					if(!isTaggle) {
+						return hit;
+					}
 					if (oldCell.isSelected()) {
 						oldCell.cancleCell();
 					} else {
