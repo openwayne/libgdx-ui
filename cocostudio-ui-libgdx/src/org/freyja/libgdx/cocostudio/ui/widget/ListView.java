@@ -758,15 +758,16 @@ public class ListView extends WidgetGroup {
 				Actor hit = null;
 
 				if (child.getTouchable() == Touchable.enabled) {
-					if (cPoint.x >= 0 && cPoint.x < child.getWidth()
-							&& cPoint.y >= 0 && cPoint.y < child.getHeight()) {
-						hit = child;
-						child.hit(cPoint.x, cPoint.y, touchable);
-					}
+					hit = child.hit(cPoint.x, cPoint.y, touchable);
 				}
-				if (hit != null)
+				if (hit != null){
 					return hit;
+				}
 			}
+			if (scrollX && scrollBounds.contains(x, y))
+				return this;
+			if (scrollY && scrollBounds.contains(x, y))
+				return this;
 			return null;
 		}
 	}

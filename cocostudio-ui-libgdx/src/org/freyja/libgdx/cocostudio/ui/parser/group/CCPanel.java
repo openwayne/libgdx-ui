@@ -27,31 +27,26 @@ public class CCPanel extends GroupParser {
 	}
 
 	@Override
-	public Actor parse(CocoStudioUIEditor editor, CCWidget widget,
-			CCOption option) {
+	public Actor parse(CocoStudioUIEditor editor, CCWidget widget, CCOption option) {
 		Table table = new Table();
-		if (option.getColorType() == 0) {// 无颜色
-
-		} else if (option.getColorType() == 1) {// 单色
-
-			Pixmap pixmap = new Pixmap((int) option.getWidth(),
-					(int) option.getHeight(), Format.RGBA8888);
-			pixmap.setColor(option.getBgColorR() / 255f,
-					option.getBgColorG() / 255f, option.getBgColorB() / 255f,
-					option.getBgColorOpacity() / 255f);
-
+		if (option.getColorType() == 0) {// 无色(包含无色)色即是空，空即是色。这个bug(panel无色时放入listView大小会丢失)暂时这么干吧
+			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA8888);
+			pixmap.setColor(0, 255, 255, 255);//透明颜色
 			pixmap.fill();
-
-			table.setBackground(new TextureRegionDrawable(new TextureRegion(
-					new Texture(pixmap))));
+			table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
 			pixmap.dispose();
-		} else {// 渐变色
-
+		} else if (option.getColorType() == 2) {// 渐变色
+			//TODO 渐变色需要特殊处理
+		} else if (option.getColorType() == 1) {// 单色
+			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA8888);
+			pixmap.setColor(option.getBgColorR() / 255f, option.getBgColorG() / 255f, option.getBgColorB() / 255f,
+					option.getBgColorOpacity() / 255f);
+			pixmap.fill();
+			table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
+			pixmap.dispose();
 		}
-
 		if (option.getBackGroundImageData() != null) {// Panel的图片并不是拉伸平铺的!!.但是这里修改为填充
-			Drawable tr = editor.findDrawable(option, option
-					.getBackGroundImageData().getPath());
+			Drawable tr = editor.findDrawable(option, option.getBackGroundImageData().getPath());
 			if (tr != null) {
 				tr.setMinHeight(option.getHeight());
 				tr.setMinWidth(option.getWidth());
@@ -62,5 +57,4 @@ public class CCPanel extends GroupParser {
 
 		return table;
 	}
-
 }
