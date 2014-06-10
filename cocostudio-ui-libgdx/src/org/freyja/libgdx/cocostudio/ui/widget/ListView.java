@@ -139,8 +139,15 @@ public class ListView extends ScrollPane {
 	}
 
 	public void setSelectedIndex(int idx) {
+		// idx是从0开始
+		if (idx <= 0) {
+			idx = 0;
+		} else {
+			idx--;
+		}
 		hitLogic(cells.get(idx));
-		locate(idx);
+		// 这里是个数,不是idx
+		locate(idx + 1);
 	}
 
 	private void locate(int idx) {
@@ -151,6 +158,7 @@ public class ListView extends ScrollPane {
 
 			if (firstPageItems >= idx) {
 				// 不用额外滚动
+				scrollX(0);
 				return;
 			}
 
@@ -166,6 +174,7 @@ public class ListView extends ScrollPane {
 
 			if (firstPageItems >= idx) {
 				// 不用额外滚动
+				scrollY(0);
 				return;
 			}
 
