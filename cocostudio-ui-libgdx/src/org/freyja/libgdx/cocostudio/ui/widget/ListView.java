@@ -5,8 +5,6 @@ import org.freyja.libgdx.cocostudio.ui.widget.list.CellWrapper;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -142,6 +140,41 @@ public class ListView extends ScrollPane {
 
 	public void setSelectedIndex(int idx) {
 		hitLogic(cells.get(idx));
+		locate(idx);
+	}
+
+	private void locate(int idx) {
+		if (horv) {
+			// 横向 true，
+			// 先考虑在最左边的情况
+			int firstPageItems = (int) Math.floor(this.getWidth() / itemWidth);
+
+			if (firstPageItems >= idx) {
+				// 不用额外滚动
+				return;
+			}
+
+			// 目前只考虑最简单的情况,把那个移动到最后一个
+			int itemEndPos = (idx + 1) * itemWidth + 100;
+			int delta = (int) (itemEndPos - this.getWidth());
+			scrollX(delta);
+		} else {
+			// 纵向 false
+			// 先考虑在最左边的情况
+			int firstPageItems = (int) Math
+					.floor(this.getHeight() / itemHeight);
+
+			if (firstPageItems >= idx) {
+				// 不用额外滚动
+				return;
+			}
+
+			// 目前只考虑最简单的情况,把那个移动到最后一个
+			int itemEndPos = (idx + 1) * itemHeight + 100;
+			int delta = (int) (itemEndPos - this.getHeight());
+			scrollY(delta);
+
+		}
 	}
 
 	public Object getSelection() {
