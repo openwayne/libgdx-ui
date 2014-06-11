@@ -296,7 +296,7 @@ public class ListView extends ScrollPane {
 	private class BlankTable extends Actor {
 		public BlankTable(float width, float height) {
 			super();
-			this.size(width, height);
+			this.setSize(width, height);
 		}
 	}
 
