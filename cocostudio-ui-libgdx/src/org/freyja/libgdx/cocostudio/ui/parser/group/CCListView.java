@@ -4,9 +4,9 @@ import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
 import org.freyja.libgdx.cocostudio.ui.widget.ListView;
-import org.freyja.libgdx.cocostudio.ui.widget.ListView.ListViewStyle;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 
 public class CCListView extends CCScrollView {
 
@@ -18,7 +18,7 @@ public class CCListView extends CCScrollView {
 	@Override
 	public Actor parse(CocoStudioUIEditor editor, CCWidget widget,
 			CCOption option) {
-		ListViewStyle style = new ListViewStyle();
+		ScrollPaneStyle style = new ScrollPaneStyle();
 
 		if (option.getBackGroundImageData() != null) {
 
@@ -30,20 +30,21 @@ public class CCListView extends CCScrollView {
 		switch (option.getDirection()) {
 		case 1:
 			scrollPane.setForceScroll(false, true);
-			// scrollPane.setScrollingDisabled(true,true);
+			scrollPane.setScrollingDisabled(true, false);
 			break;
 		case 2:
 			scrollPane.setForceScroll(true, false);
-			// scrollPane.setScrollingDisabled(false, false);
+			scrollPane.setScrollingDisabled(false, true);
 			break;
 
 		case 3:
 			scrollPane.setForceScroll(true, true);
-			// scrollPane.setScrollingDisabled(false, false);
+			scrollPane.setScrollingDisabled(true, true);
 			break;
 		}
-		// scrollPane.setClamp(false);
-		// scrollPane.setFlickScroll(option.isBounceEnable());
+		scrollPane.setClamp(true);
+		scrollPane.setFlickScroll(true);
 		return scrollPane;
+
 	}
 }

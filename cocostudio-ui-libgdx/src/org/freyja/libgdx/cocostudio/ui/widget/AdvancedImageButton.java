@@ -19,9 +19,12 @@ public class AdvancedImageButton extends ImageButton {
 	
 	@Override
 	public void setSize(float width, float height) {
+		super.setSize(width, height);
+		if(getImage() == null) {
+			return;
+		}
 		getImage().setSize(width, height);
 		this.getImage().setOrigin(width / 2, height / 2);
-		super.setSize(width, height);
 		if(label != null) {
 			label.setPosition((getWidth() - label.getWidth()) / 2,
 					(getHeight() - label.getHeight()) / 2);

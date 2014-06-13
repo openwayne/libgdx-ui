@@ -58,6 +58,10 @@ public abstract class CellWrapper {
 		System.out.println("取消" + _idx + "选中");
 		this.isSelected=false;
 	}
+	
+	public void full() {
+		System.out.println("Too many Cells were selected!!!");
+	}
 
 	public boolean isSelected() {
 		return isSelected;
