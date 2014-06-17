@@ -90,7 +90,7 @@ public class ListView extends ScrollPane {
 	/**
 	 * 横向平铺
 	 * 
-	 * @param h 行数
+	 * @param h
 	 */
 	private void layoutH(int h) {
 		container.clear();
@@ -117,32 +117,19 @@ public class ListView extends ScrollPane {
 
 	}
 
-	/**
-	 * 纵向平铺
-	 * 
-	 * @param v
-	 *            列数
-	 */
 	private void layoutV(int v) {
 		container.clear();
-		int rows = 1;
-		if (v == 1) {// 纵向一列
-			for (int i = 0; i < cells.size; i++) {
-				container.add(cells.get(i).getGroup());
+		for (int i = 0; i < cells.size; i++) {
+			if (i != 1 && i != 0 && i % v == 0) {
 				container.row();
-				rows++;
 			}
-		} else {// 纵向多列
-			for (int i = 0; i < cells.size; i++) {
-				if (i != 0 && i % v == 0) {
-					container.row();
-					rows++;
-				}
-				container.add(cells.get(i).getGroup());
+			container.add(cells.get(i).getGroup());
+			if (v == 1) {
+				container.row();
 			}
-			container.row();
 		}
-		int cellsHeight = rows * itemHeight;
+
+		int cellsHeight = cells.size * itemHeight;
 		// 为了保证现实没那么操蛋,这里增加一个填充的东西
 		if (cellsHeight < this.getHeight()) {
 			container.add(new BlankTable(itemWidth, this.getHeight()
