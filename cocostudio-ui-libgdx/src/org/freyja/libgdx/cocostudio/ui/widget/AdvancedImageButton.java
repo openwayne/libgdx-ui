@@ -114,4 +114,17 @@ public class AdvancedImageButton extends ImageButton {
 
 		getImage().addAction(Actions.scaleTo(1, 1, 0.1f));
 	}
+	
+	
+	/**
+	 * 获取按钮上的文本
+	 * @return
+	 */
+	public String getText() {
+		if (this.label == null) {
+			return "";
+		} else {
+			return label.getText().toString();
+		}
+	}
 }
