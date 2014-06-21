@@ -52,10 +52,6 @@ public class FontUtil {
 			font = generator.generateFont(param);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			// if (generator != null) {
-			// generator.dispose();
-			// }
 		}
 		if (font == null) {
 			return new BitmapFont();
