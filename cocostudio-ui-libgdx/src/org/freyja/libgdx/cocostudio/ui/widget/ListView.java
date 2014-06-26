@@ -143,6 +143,9 @@ public class ListView extends ScrollPane {
 		if (idx <= 0) {
 			idx = 0;
 		}
+		if(idx >= cells.size) {
+			idx = cells.size - 1;
+		}
 		hitLogic(cells.get(idx));
 		// 这里是个数,不是idx
 		locate(idx);
