@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class FontUtil {
 
@@ -44,13 +45,13 @@ public class FontUtil {
 			}
 
 			String newText = StringUtil.removeRepeatedChar(text);
-			font = generator.generateFont(fontSize, newText, false);
+			FreeTypeFontParameter param = new FreeTypeFontParameter();
+			param.size = fontSize;
+			param.characters = newText;
+			param.flip = false;
+			font = generator.generateFont(param);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			// if (generator != null) {
-			// generator.dispose();
-			// }
 		}
 		if (font == null) {
 			return new BitmapFont();

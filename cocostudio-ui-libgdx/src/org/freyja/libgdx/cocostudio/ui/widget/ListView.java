@@ -142,12 +142,13 @@ public class ListView extends ScrollPane {
 		// idx是从0开始
 		if (idx <= 0) {
 			idx = 0;
-		} else {
-			idx--;
+		}
+		if(idx >= cells.size) {
+			idx = cells.size - 1;
 		}
 		hitLogic(cells.get(idx));
 		// 这里是个数,不是idx
-		locate(idx + 1);
+		locate(idx);
 	}
 
 	private void locate(int idx) {
