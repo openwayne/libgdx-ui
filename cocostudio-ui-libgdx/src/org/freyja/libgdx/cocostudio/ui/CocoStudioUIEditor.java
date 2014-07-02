@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.html.ListView;
+
 import org.freyja.libgdx.cocostudio.ui.model.CCExport;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
@@ -25,13 +27,13 @@ import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLabelBMFont;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLoadingBar;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCSlider;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCTextField;
+import org.freyja.libgdx.cocostudio.ui.res.TextureManager;
 import org.freyja.libgdx.cocostudio.ui.util.FontUtil;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -42,11 +44,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 
 /**
@@ -58,7 +62,9 @@ import com.badlogic.gdx.utils.Json;
  * @wiki https://github.com/121077313/cocostudio-ui-libgdx/wiki
  * @tip https://github.com/121077313/cocostudio-ui-libgdx/wiki/疑难解答
  */
-public class CocoStudioUIEditor {
+public class CocoStudioUIEditor implements Disposable {
+	private static int regTag = 0;
+	private String regFileName;
 
 	final String tag = CocoStudioUIEditor.class.getName();
 
@@ -125,6 +131,9 @@ public class CocoStudioUIEditor {
 	public CocoStudioUIEditor(FileHandle jsonFile,
 			Map<String, FileHandle> ttfs, Map<String, BitmapFont> bitmapFonts,
 			FileHandle defaultFont, Collection<TextureAtlas> textureAtlas) {
+
+		regFileName = jsonFile.name() + "|id:" + regTag++;
+
 		this.textureAtlas = textureAtlas;
 		this.ttfs = ttfs;
 		this.bitmapFonts = bitmapFonts;
@@ -303,8 +312,8 @@ public class CocoStudioUIEditor {
 		}
 		TextureRegion tr = null;
 		if (textureAtlas == null || textureAtlas.size() == 0) {// 不使用合并纹理
-			tr = new TextureRegion(new Texture(Gdx.files.internal(dirName
-					+ name)));
+			tr = new TextureRegion(TextureManager.getTexture(regFileName,
+					Gdx.files.internal(dirName + name)));
 		} else {
 
 			try {
@@ -367,7 +376,8 @@ public class CocoStudioUIEditor {
 
 		NinePatch tr = null;
 		if (textureAtlas == null || textureAtlas.size() == 0) {// 不使用合并纹理
-			tr = new NinePatch(new Texture(Gdx.files.internal(dirName + name)),
+			tr = new NinePatch(TextureManager.getTexture(regFileName,
+					Gdx.files.internal(dirName + name)),
 					option.getCapInsetsX(), option.getCapInsetsX()
 							+ option.getCapInsetsWidth(),
 					option.getCapInsetsY(), option.getCapInsetsY()
@@ -578,6 +588,11 @@ public class CocoStudioUIEditor {
 
 	public Map<Integer, Actor> getTags() {
 		return _tags;
+	}
+	
+	@Override
+	public void dispose() {
+		TextureManager.cleanModule(regFileName);
 	}
 
 }

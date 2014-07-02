@@ -4,8 +4,9 @@ import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Disposable;
 
-public abstract class CellWrapper {
+public abstract class CellWrapper implements Disposable {
 	private CocoStudioUIEditor _editor;
 	private Group _group;
 	private int _idx;
@@ -16,7 +17,7 @@ public abstract class CellWrapper {
 		this._group = this.getEditor().createGroup();
 		_group.setName(file.name());
 	}
-	
+
 	public CocoStudioUIEditor getEditor() {
 		return _editor;
 	}
@@ -51,19 +52,24 @@ public abstract class CellWrapper {
 
 	public void selectCell() {
 		System.out.println("点中" + _idx + "sell了");
-		this.isSelected=true;
+		this.isSelected = true;
 	}
 
 	public void cancleCell() {
 		System.out.println("取消" + _idx + "选中");
-		this.isSelected=false;
+		this.isSelected = false;
 	}
-	
+
 	public void full() {
 		System.out.println("Too many Cells were selected!!!");
 	}
 
 	public boolean isSelected() {
 		return isSelected;
+	}
+	
+	@Override
+	public void dispose() {
+		this._editor.dispose();
 	}
 }

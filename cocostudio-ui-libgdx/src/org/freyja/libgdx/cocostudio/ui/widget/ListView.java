@@ -9,8 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
-public class ListView extends ScrollPane {
+public class ListView extends ScrollPane implements Disposable{
 	private CellTable container = new CellTable();
 	private Object[] items;
 	private Array<CellWrapper> cells = new Array<CellWrapper>();
@@ -46,7 +47,14 @@ public class ListView extends ScrollPane {
 		});
 
 	}
-
+	
+	private void removeCells() {
+		for (int i = 0; i < cells.size; i++) {
+			cells.get(i).dispose();
+		}
+		cells.clear();
+	}
+	
 	public void setItems(Object[] objects, CellWrapper cell, int itemWidth,
 			int itemHeight) {
 		if (objects == null)
@@ -54,7 +62,7 @@ public class ListView extends ScrollPane {
 		items = objects;
 		this.itemWidth = itemWidth;
 		this.itemHeight = itemHeight;
-		cells.clear();
+		removeCells();
 		container.clear();
 		for (int i = 0; i < items.length; i++) {
 			CellWrapper t = cell.cloneCell();
@@ -328,5 +336,10 @@ public class ListView extends ScrollPane {
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public void dispose() {
+		removeCells();
 	}
 }
