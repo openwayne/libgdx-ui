@@ -38,16 +38,16 @@ public class CCScrollView extends GroupParser {
 		switch (option.getDirection()) {
 		case 1:
 			scrollPane.setForceScroll(false, true);
-			 scrollPane.setScrollingDisabled(true,true);
+			// scrollPane.setScrollingDisabled(true,true);
 			break;
 		case 2:
 			scrollPane.setForceScroll(true, false);
-			 scrollPane.setScrollingDisabled(false, false);
+			// scrollPane.setScrollingDisabled(false, false);
 			break;
 
 		case 3:
 			scrollPane.setForceScroll(true, true);
-			 scrollPane.setScrollingDisabled(false, false);
+			// scrollPane.setScrollingDisabled(false, false);
 			break;
 		}
 		scrollPane.setClamp(false);
