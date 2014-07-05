@@ -206,14 +206,10 @@ public class CocoStudioUIEditor implements Disposable {
 	 * @return
 	 */
 	public Group createGroup() {
-		long time1=System.currentTimeMillis();
 		if (editorDos == null) {
 			editorDos = (Group) parseWidget(null, export.getWidgetTree());
 		}
-		long time2=System.currentTimeMillis();
 		parseAction();
-		long time3=System.currentTimeMillis();
-		System.out.println("parseWidget cost:"+(time2-time1)+":parseAction cost:"+(time3-time2));
 		return editorDos;
 	}
 
@@ -466,7 +462,6 @@ public class CocoStudioUIEditor implements Disposable {
 	 * @param node
 	 * @return
 	 */
-	//需要优化!
 	public Actor parseWidget(Group parent, CCWidget widget) {
 
 		CCOption option = widget.getOptions();
