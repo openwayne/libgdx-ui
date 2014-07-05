@@ -289,11 +289,14 @@ public class ListView extends ScrollPane implements Disposable{
 	}
 	
 	/**
-	 * 全选
+	 * 全选</br>
+	 * org.freyja.libgdx.cocostudio.ui.widget.ListView.setSelected(boolean, int)
 	 */
 	public void checkedAll() {
 		if (isSelected) {
 			for (int i = 0; i < cells.size; i++) {
+				if (cells.get(i).isSelected())//已选中的cell不再走hitLogic
+					continue;
 				hitLogic(cells.get(i));
 			}
 			locate(0);
