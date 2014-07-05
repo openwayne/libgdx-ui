@@ -287,6 +287,18 @@ public class ListView extends ScrollPane implements Disposable{
 			this.selectAmount = selectAmount;
 		}
 	}
+	
+	/**
+	 * 全选
+	 */
+	public void checkedAll() {
+		if (isSelected) {
+			for (int i = 0; i < cells.size; i++) {
+				hitLogic(cells.get(i));
+			}
+			locate(0);
+		}
+	}
 
 	public boolean isToggle() {
 		return isToggle;
