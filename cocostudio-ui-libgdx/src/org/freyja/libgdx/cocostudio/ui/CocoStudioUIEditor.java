@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.text.html.ListView;
-
 import org.freyja.libgdx.cocostudio.ui.model.CCExport;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
@@ -44,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -52,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /**
  * CocoStudio ui 解析器.根据CocoStudio的ui编辑器生成的json文件,创建出一个对应Group.
@@ -65,6 +63,8 @@ import com.badlogic.gdx.utils.Json;
 public class CocoStudioUIEditor implements Disposable {
 	private static int regTag = 0;
 	private String regFileName;
+
+	private Group editorDos;
 
 	final String tag = CocoStudioUIEditor.class.getName();
 
@@ -206,11 +206,15 @@ public class CocoStudioUIEditor implements Disposable {
 	 * @return
 	 */
 	public Group createGroup() {
-		Actor actor = parseWidget(null, export.getWidgetTree());
-
+		long time1=System.currentTimeMillis();
+		if (editorDos == null) {
+			editorDos = (Group) parseWidget(null, export.getWidgetTree());
+		}
+		long time2=System.currentTimeMillis();
 		parseAction();
-
-		return (Group) actor;
+		long time3=System.currentTimeMillis();
+		System.out.println("parseWidget cost:"+(time2-time1)+":parseAction cost:"+(time3-time2));
+		return editorDos;
 	}
 
 	/** 查找动画 */
@@ -462,6 +466,7 @@ public class CocoStudioUIEditor implements Disposable {
 	 * @param node
 	 * @return
 	 */
+	//需要优化!
 	public Actor parseWidget(Group parent, CCWidget widget) {
 
 		CCOption option = widget.getOptions();
@@ -539,10 +544,7 @@ public class CocoStudioUIEditor implements Disposable {
 			debug(option, "ttf字体:" + option.getFontName() + " 不存在,使用默认字体");
 		}
 
-		BitmapFont font = FontUtil.createFont(fontFile, option.getText(),
-				option.getFontSize());
-
-		return new TTFLabelStyle(new LabelStyle(font, textColor), fontFile,
+		return new TTFLabelStyle(textColor, fontFile,
 				option.getFontSize());
 	}
 
@@ -589,9 +591,23 @@ public class CocoStudioUIEditor implements Disposable {
 	public Map<Integer, Actor> getTags() {
 		return _tags;
 	}
+
+	private void disposeGroup(Group group) {
+		SnapshotArray<Actor> childArr = group.getChildren();
+		for (int i = 0; i < childArr.size; i++) {
+			Actor tmp = childArr.get(i);
+			if(tmp instanceof Disposable) {
+				((Disposable) tmp).dispose();
+			} else if(tmp instanceof Group){
+				disposeGroup((Group) tmp);
+			}
+		}
+	}
+	
 	
 	@Override
 	public void dispose() {
+		disposeGroup(editorDos);
 		TextureManager.cleanModule(regFileName);
 	}
 

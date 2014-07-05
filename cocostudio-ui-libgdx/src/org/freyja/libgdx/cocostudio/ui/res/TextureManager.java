@@ -17,6 +17,9 @@ public class TextureManager {
 		_cache.put(key, texture);
 	}
 
+	public static void debug() {
+		System.err.println("TextureManager 剩余纹理: " + _cache.size());
+	}
 	public static Texture getTexture(String clzName, String fileName) {
 		return getTexture(clzName, Gdx.files.internal(fileName));
 	}
@@ -33,7 +36,7 @@ public class TextureManager {
 		tmp = new RefTexture();
 
 		tmp.texture = new Texture(fileHandle);
-		tmp.refMap.put(clzName, 0);
+		tmp.refMap.put(clzName, 1);
 		tmp.file = fileHandle.name();
 
 		addCache(fileHandle.name(), tmp);

@@ -23,7 +23,7 @@ public class CCLabel extends WidgetParser {
 	public Actor parse(CocoStudioUIEditor editor, CCWidget widget,
 			CCOption option) {
 
-		final TTFLabelStyle labelStyle = editor.createLabelStyle(option);
+		TTFLabelStyle labelStyle = editor.createLabelStyle(option);
 
 		TTFLabel label = new TTFLabel(option.getText(), labelStyle);
 

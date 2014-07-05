@@ -1,6 +1,7 @@
 package org.freyja.libgdx.cocostudio.ui.widget;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class TTFLabelStyle extends LabelStyle {
@@ -9,9 +10,9 @@ public class TTFLabelStyle extends LabelStyle {
 
 	private int fontSize;
 
-	public TTFLabelStyle(LabelStyle labelStyle, FileHandle fontFileHandle,
+	public TTFLabelStyle(Color fontColor, FileHandle fontFileHandle,
 			int fontSize) {
-		super(labelStyle);
+		super(null, fontColor);
 		this.fontFileHandle = fontFileHandle;
 		this.fontSize = fontSize;
 	}
