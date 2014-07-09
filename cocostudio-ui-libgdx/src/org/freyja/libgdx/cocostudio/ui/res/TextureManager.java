@@ -25,7 +25,7 @@ public class TextureManager {
 	}
 	
 	public static Texture getTexture(String clzName, FileHandle fileHandle) {
-		RefTexture tmp = _cache.get(fileHandle.name());
+		RefTexture tmp = _cache.get(fileHandle.path());
 
 		if (tmp != null) {
 			tmp.count++;
@@ -37,9 +37,9 @@ public class TextureManager {
 
 		tmp.texture = new Texture(fileHandle);
 		tmp.refMap.put(clzName, 1);
-		tmp.file = fileHandle.name();
+		tmp.file = fileHandle.path();
 
-		addCache(fileHandle.name(), tmp);
+		addCache(fileHandle.path(), tmp);
 		return tmp.texture;
 	}
 
