@@ -36,9 +36,10 @@ public class TextureManager {
 		tmp = new RefTexture();
 
 		tmp.texture = new Texture(fileHandle);
-		tmp.refMap.put(clzName, 1);
+		tmp.refMap.put(clzName, 0);
 		tmp.file = fileHandle.path();
-
+		tmp.count = 1;
+		
 		addCache(fileHandle.path(), tmp);
 		return tmp.texture;
 	}

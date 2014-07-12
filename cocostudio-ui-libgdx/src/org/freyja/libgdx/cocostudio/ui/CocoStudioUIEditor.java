@@ -516,30 +516,12 @@ public class CocoStudioUIEditor implements Disposable {
 			fontFile = defaultFont;
 		}
 
-		Color textColor = null;
-
-		if (option.getTextColorB() == 0 & option.getTextColorG() == 0
-				&& option.getTextColorR() == 0) {
-
-			textColor = new Color(option.getColorR() / 255.0f,
-					option.getColorG() / 255.0f, option.getColorB() / 255.0f,
-					option.getOpacity() / 255.0f);
-
-		} else {
-
-			textColor = new Color(option.getTextColorR() / 255.0f,
-					option.getTextColorG() / 255.0f,
-					option.getTextColorB() / 255.0f,
-					option.getOpacity() / 255.0f);
-
-		}
-
 		if (fontFile == null) {
 			fontFile = Gdx.files.internal("DroidSansFallback.ttf");
 			debug(option, "ttf字体:" + option.getFontName() + " 不存在,使用默认字体");
 		}
 
-		return new TTFLabelStyle(textColor, fontFile,
+		return new TTFLabelStyle(Color.WHITE, fontFile,
 				option.getFontSize());
 	}
 

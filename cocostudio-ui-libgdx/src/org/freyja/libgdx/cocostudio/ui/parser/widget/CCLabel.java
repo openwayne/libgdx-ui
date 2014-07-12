@@ -8,6 +8,7 @@ import org.freyja.libgdx.cocostudio.ui.util.FontUtil;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabel;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -25,8 +26,28 @@ public class CCLabel extends WidgetParser {
 
 		TTFLabelStyle labelStyle = editor.createLabelStyle(option);
 
+		Color textColor = null;
+
+		if (option.getTextColorB() == 0 & option.getTextColorG() == 0
+				&& option.getTextColorR() == 0) {
+
+			textColor = new Color(option.getColorR() / 255.0f,
+					option.getColorG() / 255.0f, option.getColorB() / 255.0f,
+					option.getOpacity() / 255.0f);
+
+		} else {
+
+			textColor = new Color(option.getTextColorR() / 255.0f,
+					option.getTextColorG() / 255.0f,
+					option.getTextColorB() / 255.0f,
+					option.getOpacity() / 255.0f);
+
+		}
+		
 		TTFLabel label = new TTFLabel(option.getText(), labelStyle);
 
+		label.setColor(textColor);
+		
 		// 水平
 		int h = 0;
 		switch (option.gethAlignment()) {
