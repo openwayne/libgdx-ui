@@ -1,6 +1,7 @@
 package org.freyja.libgdx.cocostudio.ui.widget;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -64,6 +65,14 @@ public class AdvancedImageButton extends ImageButton {
 		label.setAlignment(Align.center);
 		label.setPosition((getWidth() - label.getWidth()) / 2,
 				(getHeight() - label.getHeight()) / 2);
+	}
+	
+	public void setLabelColor(Color color) {
+		if(label == null) {
+			Gdx.app.error("AdvancedImageButton", "set text to an null label");
+			return;
+		}
+		label.setColor(color);
 	}
 
 	@Override
