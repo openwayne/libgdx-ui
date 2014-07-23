@@ -69,7 +69,7 @@ public class AdvancedImageButton extends ImageButton {
 	
 	public void setLabelColor(Color color) {
 		if(label == null) {
-			Gdx.app.error("AdvancedImageButton", "set text to an null label");
+			Gdx.app.error("AdvancedImageButton", "set color to an null label");
 			return;
 		}
 		label.setColor(color);
