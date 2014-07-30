@@ -7,6 +7,7 @@ import org.freyja.libgdx.cocostudio.ui.parser.GroupParser;
 import org.freyja.libgdx.cocostudio.ui.widget.AdvancedImageButton;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 
@@ -33,6 +34,8 @@ public class CCButton extends GroupParser {
 			TTFLabelStyle labelStyle = editor.createLabelStyle(option);
 
 			button.addText(option.getText(), labelStyle);
+			button.setLabelColor(new Color(option.getTextColorR() / 255.0f, option
+					.getTextColorG() / 255.0f, option.getTextColorB() / 255.0f, 1));
 		}
 		return button;
 	}

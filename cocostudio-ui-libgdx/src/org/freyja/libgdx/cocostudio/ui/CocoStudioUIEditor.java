@@ -26,7 +26,6 @@ import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLoadingBar;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCSlider;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCTextField;
 import org.freyja.libgdx.cocostudio.ui.res.TextureManager;
-import org.freyja.libgdx.cocostudio.ui.util.FontUtil;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.Gdx;
@@ -42,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -318,30 +316,12 @@ public class CocoStudioUIEditor implements Disposable {
 
 			try {
 				String[] arr = name.split("\\/");
-				name = name.substring(arr[0].length() + 1, name.length() - 4);
+				String newName = arr[arr.length - 1];
+				newName = arr[arr.length - 1].substring(0, newName.length() - 4);
+				tr = findRegion(newName);
+
 			} catch (Exception e) {
-				error(option, "名称不符合约定,无法解析.请查看github项目wiki");
-			}
-
-			// 考虑index下标
-
-			if (name.indexOf("_") == -1) {
 				tr = findRegion(name);
-			} else {
-				try {
-					int length = name.lastIndexOf("_");
-
-					Integer index = Integer.parseInt(name.substring(length + 1,
-							name.length()));
-					// 这里可能报错,属于正常,因为会出现 xx_xx名字的资源而不是xx_2这种
-
-					name = name.substring(0, length);
-
-					tr = findRegion(name, index);
-
-				} catch (Exception e) {
-					tr = findRegion(name);
-				}
 			}
 		}
 		if (tr == null) {
@@ -383,36 +363,18 @@ public class CocoStudioUIEditor implements Disposable {
 					option.getCapInsetsY(), option.getCapInsetsY()
 							+ option.getCapInsetsHeight());
 		} else {
-			name = name.substring(0, name.indexOf("."));
-			// 考虑index下标
+			name = name.substring(name.lastIndexOf("/") + 1, name.indexOf("."));
 
-			if (name.indexOf("_") == -1) {
-				for (TextureAtlas atlas : textureAtlas) {
-					tr = atlas.createPatch(name);
-					if (tr != null) {
-						break;
-					}
-				}
-			} else {
-				try {
-					// 不支持同名索引查找
-					int length = name.lastIndexOf("_");
-					Integer index = Integer.parseInt(name.substring(length + 1,
-							name.length()));
-					name = name.substring(0, length);
-					for (TextureAtlas atlas : textureAtlas) {
-						tr = atlas.createPatch(name);
-						if (tr != null) {
-							break;
-						}
-					}
-				} catch (Exception e) {
-					for (TextureAtlas atlas : textureAtlas) {
-						tr = atlas.createPatch(name);
-						if (tr != null) {
-							break;
-						}
-					}
+			for (TextureAtlas atlas : textureAtlas) {
+				TextureRegion trg = atlas.findRegion(name);
+				tr = new NinePatch(trg, option.getCapInsetsX(),
+						option.getCapInsetsX() + option.getCapInsetsWidth(),
+						option.getCapInsetsY(), option.getCapInsetsY()
+								+ option.getCapInsetsHeight());
+				// 这么用绝逼出错
+				// tr = atlas.createPatch(name);
+				if (tr != null) {
+					break;
 				}
 			}
 		}
@@ -521,8 +483,7 @@ public class CocoStudioUIEditor implements Disposable {
 			debug(option, "ttf字体:" + option.getFontName() + " 不存在,使用默认字体");
 		}
 
-		return new TTFLabelStyle(Color.WHITE, fontFile,
-				option.getFontSize());
+		return new TTFLabelStyle(Color.WHITE, fontFile, option.getFontSize());
 	}
 
 	public Map<String, Array<Actor>> getActors() {
@@ -573,15 +534,14 @@ public class CocoStudioUIEditor implements Disposable {
 		SnapshotArray<Actor> childArr = group.getChildren();
 		for (int i = 0; i < childArr.size; i++) {
 			Actor tmp = childArr.get(i);
-			if(tmp instanceof Disposable) {
+			if (tmp instanceof Disposable) {
 				((Disposable) tmp).dispose();
-			} else if(tmp instanceof Group){
+			} else if (tmp instanceof Group) {
 				disposeGroup((Group) tmp);
 			}
 		}
 	}
-	
-	
+
 	@Override
 	public void dispose() {
 		disposeGroup(editorDos);
