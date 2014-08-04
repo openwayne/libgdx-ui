@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minidev.json.parser.JSONParser;
-
 import org.freyja.libgdx.cocostudio.ui.model.CCExport;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
@@ -29,7 +27,6 @@ import org.freyja.libgdx.cocostudio.ui.parser.widget.CCSlider;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCTextField;
 import org.freyja.libgdx.cocostudio.ui.res.TextureManager;
 import org.freyja.libgdx.cocostudio.ui.util.FileToObject;
-import org.freyja.libgdx.cocostudio.ui.util.ObjectToFile;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.Gdx;
@@ -50,7 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /**
