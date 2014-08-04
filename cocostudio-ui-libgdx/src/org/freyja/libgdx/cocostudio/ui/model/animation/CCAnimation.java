@@ -1,8 +1,14 @@
 package org.freyja.libgdx.cocostudio.ui.model.animation;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CCAnimation {
+public class CCAnimation implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7469741851314928324L;
 
 	String classname;
 

@@ -2,6 +2,7 @@ package org.freyja.libgdx.cocostudio.ui.widget;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class TTFLabelStyle extends LabelStyle {
@@ -9,12 +10,14 @@ public class TTFLabelStyle extends LabelStyle {
 	private FileHandle fontFileHandle;
 
 	private int fontSize;
-
+	private static BitmapFont defaultBmf = new BitmapFont();
+	
 	public TTFLabelStyle(Color fontColor, FileHandle fontFileHandle,
 			int fontSize) {
 		super(null, fontColor);
 		this.fontFileHandle = fontFileHandle;
 		this.fontSize = fontSize;
+		this.font = defaultBmf;
 	}
 
 	public int getFontSize() {
@@ -31,6 +34,12 @@ public class TTFLabelStyle extends LabelStyle {
 
 	public void setFontFileHandle(FileHandle fontFileHandle) {
 		this.fontFileHandle = fontFileHandle;
+	}
+
+	public void clearFont() {
+		if(!font.equals(defaultBmf)) {
+			font.dispose();
+		}
 	}
 
 }

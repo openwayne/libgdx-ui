@@ -1,5 +1,6 @@
 package org.freyja.libgdx.cocostudio.ui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,15 +9,20 @@ import java.util.List;
  * @author i see
  * 
  */
-public class CCWidget {
+public class CCWidget implements Serializable {
 
-	 String classname;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8665411499966949586L;
 
-	 String name;
+	String classname;
 
-	 List<CCWidget> children;
+	String name;
 
-	 CCOption options;
+	List<CCWidget> children;
+
+	CCOption options;
 
 	public String getClassname() {
 		return classname;

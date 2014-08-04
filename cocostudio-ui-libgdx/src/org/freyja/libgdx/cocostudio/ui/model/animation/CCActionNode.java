@@ -1,8 +1,13 @@
 package org.freyja.libgdx.cocostudio.ui.model.animation;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CCActionNode {
+public class CCActionNode implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4792398294885643979L;
 	String classname;
 	String name;
 	int ActionTag;

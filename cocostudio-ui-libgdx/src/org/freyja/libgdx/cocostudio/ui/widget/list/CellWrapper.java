@@ -1,8 +1,11 @@
 package org.freyja.libgdx.cocostudio.ui.widget.list;
 
+import java.util.Collection;
+
 import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -12,10 +15,14 @@ public abstract class CellWrapper implements Disposable {
 	private int _idx;
 	private boolean isSelected;
 
-	public void init(FileHandle file) {
-		this._editor = new CocoStudioUIEditor(file, null, null, null, null);
+	public void init(FileHandle file, Collection<TextureAtlas> textureAtlas) {
+		this._editor = new CocoStudioUIEditor(file, null, null, null, textureAtlas);
 		this._group = this.getEditor().createGroup();
 		_group.setName(file.name());
+	}
+	
+	public void init(FileHandle file) {
+		init(file, null);
 	}
 
 	public CocoStudioUIEditor getEditor() {

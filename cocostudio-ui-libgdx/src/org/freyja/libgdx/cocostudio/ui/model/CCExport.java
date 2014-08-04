@@ -1,5 +1,6 @@
 package org.freyja.libgdx.cocostudio.ui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.freyja.libgdx.cocostudio.ui.model.animation.CCAnimation;
@@ -10,7 +11,12 @@ import org.freyja.libgdx.cocostudio.ui.model.animation.CCAnimation;
  * @author i see
  * 
  */
-public class CCExport {
+public class CCExport implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7823893175250407456L;
 
 	String classname;
 

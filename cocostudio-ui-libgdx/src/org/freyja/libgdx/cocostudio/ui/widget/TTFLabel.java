@@ -21,10 +21,10 @@ public class TTFLabel extends Label implements Disposable{
 
 	@Override
 	public void setText(CharSequence newText) {
-		LabelStyle style = getStyle();
+		TTFLabelStyle style = (TTFLabelStyle) getStyle();
 
 		//
-		this.getStyle().font.dispose();
+		style.clearFont();
 		
 		style.font = createFont((TTFLabelStyle) style, newText.toString());
 
@@ -45,9 +45,7 @@ public class TTFLabel extends Label implements Disposable{
 
 	@Override
 	public void setStyle(LabelStyle style) {
-		if(style.font != null) {
-			style.font.dispose();
-		}
+		((TTFLabelStyle)style).clearFont();
 		
 		style.font = createFont((TTFLabelStyle) style, "" + getText());
 

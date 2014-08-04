@@ -1,12 +1,18 @@
 package org.freyja.libgdx.cocostudio.ui.model;
 
+import java.io.Serializable;
+
 /**
  * 控件选项
  * 
  * @author i see
  * 
  */
-public class CCOption {
+public class CCOption implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6173998435760629234L;
 	String __type;
 	String classname;
 	String name;

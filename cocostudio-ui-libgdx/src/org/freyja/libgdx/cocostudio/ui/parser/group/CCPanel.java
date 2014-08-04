@@ -30,7 +30,7 @@ public class CCPanel extends GroupParser {
 	public Actor parse(CocoStudioUIEditor editor, CCWidget widget, CCOption option) {
 		Table table = new Table();
 		if (option.getColorType() == 0) {// 无色(包含无色)色即是空，空即是色。这个bug(panel无色时放入listView大小会丢失)暂时这么干吧
-			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA8888);
+			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA4444);
 			pixmap.setColor(0, 255, 255, 255);//透明颜色
 			pixmap.fill();
 			table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
@@ -38,7 +38,7 @@ public class CCPanel extends GroupParser {
 		} else if (option.getColorType() == 2) {// 渐变色
 			//TODO 渐变色需要特殊处理
 		} else if (option.getColorType() == 1) {// 单色
-			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA8888);
+			Pixmap pixmap = new Pixmap((int) option.getWidth(), (int) option.getHeight(), Format.RGBA4444);
 			pixmap.setColor(option.getBgColorR() / 255f, option.getBgColorG() / 255f, option.getBgColorB() / 255f,
 					option.getBgColorOpacity() / 255f);
 			pixmap.fill();

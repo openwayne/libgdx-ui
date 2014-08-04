@@ -1,6 +1,12 @@
 package org.freyja.libgdx.cocostudio.ui.model;
 
-public class CCWidgetData {
+import java.io.Serializable;
+
+public class CCWidgetData implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8238598317738682399L;
 	private String path;
 	private String plistFile;
 	private int resourceType;

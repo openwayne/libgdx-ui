@@ -7,6 +7,7 @@ import org.freyja.libgdx.cocostudio.ui.parser.GroupParser;
 import org.freyja.libgdx.cocostudio.ui.widget.AdvancedImageButton;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -26,6 +27,9 @@ public class CCButton extends GroupParser {
 				editor.findDrawable(option, option.getNormalData().getPath()),
 				editor.findDrawable(option, option.getPressedData().getPath()),
 				null);
+		Gdx.app.log("按钮资源up", option.getNormalData().getPath());
+		Gdx.app.log("按钮资源down", option.getPressedData().getPath());
+		
 		style.imageDisabled = editor.findDrawable(option, option
 				.getDisabledData().getPath());
 		AdvancedImageButton button = new AdvancedImageButton(style);

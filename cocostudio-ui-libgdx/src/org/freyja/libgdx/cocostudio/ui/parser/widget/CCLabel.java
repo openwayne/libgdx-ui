@@ -4,13 +4,11 @@ import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
 import org.freyja.libgdx.cocostudio.ui.parser.WidgetParser;
-import org.freyja.libgdx.cocostudio.ui.util.FontUtil;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabel;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 public class CCLabel extends WidgetParser {

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minidev.json.parser.JSONParser;
+
 import org.freyja.libgdx.cocostudio.ui.model.CCExport;
 import org.freyja.libgdx.cocostudio.ui.model.CCOption;
 import org.freyja.libgdx.cocostudio.ui.model.CCWidget;
@@ -26,6 +28,8 @@ import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLoadingBar;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCSlider;
 import org.freyja.libgdx.cocostudio.ui.parser.widget.CCTextField;
 import org.freyja.libgdx.cocostudio.ui.res.TextureManager;
+import org.freyja.libgdx.cocostudio.ui.util.FileToObject;
+import org.freyja.libgdx.cocostudio.ui.util.ObjectToFile;
 import org.freyja.libgdx.cocostudio.ui.widget.TTFLabelStyle;
 
 import com.badlogic.gdx.Gdx;
@@ -96,9 +100,12 @@ public class CocoStudioUIEditor implements Disposable {
 	}
 
 	/** 默认ttf字体文件 */
-	protected FileHandle defaultFont;
+	public final static FileHandle defaultFont = Gdx.files
+			.internal("DroidSansFallback.ttf");
 
 	private Map<Integer, Actor> _tags;
+	
+	private final static Map<String, CCExport> cacheExp = new HashMap<String, CCExport>();
 
 	/**
 	 * 不需要显示文字
@@ -135,7 +142,9 @@ public class CocoStudioUIEditor implements Disposable {
 		this.textureAtlas = textureAtlas;
 		this.ttfs = ttfs;
 		this.bitmapFonts = bitmapFonts;
-		this.defaultFont = defaultFont;
+
+		// this.defaultFont = defaultFont;
+
 		parsers = new HashMap<String, BaseWidgetParser>();
 
 		addParser(new CCButton());
@@ -166,11 +175,25 @@ public class CocoStudioUIEditor implements Disposable {
 		// if (!dirName.equals("")) {
 		// dirName += File.separator;
 		// }
-		String json = jsonFile.readString("utf-8");
-		Json jj = new Json();
-		jj.setIgnoreUnknownFields(true);
-		export = jj.fromJson(CCExport.class, json);
+		String expName = jsonFile.path().replace(".json", ".exp");
+		if(cacheExp.containsKey(expName)) {
+			export = cacheExp.get(expName);
+			return;
+		}
+		
+		long st = System.nanoTime();
+//		String json = jsonFile.readString("utf-8");
+//		Json jj = new Json();
+//		jj.setIgnoreUnknownFields(true);
+//		export = jj.fromJson(CCExport.class, json);
+//		ObjectToFile.toFile(export, "export1.dat");
+//		System.err.println("jj.fromJson " + (System.nanoTime() - st) / 1000000.0f);
 
+		
+//		st = System.nanoTime();
+		export = (CCExport) FileToObject.toObj(expName);
+		System.err.println("FileToObject.toObj " + (System.nanoTime() - st) / 1000000.0f);
+		cacheExp.put(expName, export);
 	}
 
 	/**
@@ -205,7 +228,10 @@ public class CocoStudioUIEditor implements Disposable {
 	 */
 	public Group createGroup() {
 		if (editorDos == null) {
+			long st = System.nanoTime();
 			editorDos = (Group) parseWidget(null, export.getWidgetTree());
+			System.err.println("createGroup " + (System.nanoTime() - st)
+					/ 1000000.0f);
 		}
 		parseAction();
 		return editorDos;
@@ -317,7 +343,8 @@ public class CocoStudioUIEditor implements Disposable {
 			try {
 				String[] arr = name.split("\\/");
 				String newName = arr[arr.length - 1];
-				newName = arr[arr.length - 1].substring(0, newName.length() - 4);
+				newName = arr[arr.length - 1]
+						.substring(0, newName.length() - 4);
 				tr = findRegion(newName);
 
 			} catch (Exception e) {
@@ -364,22 +391,23 @@ public class CocoStudioUIEditor implements Disposable {
 							+ option.getCapInsetsHeight());
 		} else {
 			name = name.substring(name.lastIndexOf("/") + 1, name.indexOf("."));
-
+			TextureRegion trg = null;
 			for (TextureAtlas atlas : textureAtlas) {
-				TextureRegion trg = atlas.findRegion(name);
-				tr = new NinePatch(trg, option.getCapInsetsX(),
-						option.getCapInsetsX() + option.getCapInsetsWidth(),
-						option.getCapInsetsY(), option.getCapInsetsY()
-								+ option.getCapInsetsHeight());
-				// 这么用绝逼出错
-				// tr = atlas.createPatch(name);
-				if (tr != null) {
+				trg = atlas.findRegion(name);
+				if (trg != null) {
 					break;
 				}
 			}
-		}
-		if (tr == null) {
-			debug(option, "找不到纹理");
+
+			if (trg == null) {
+				debug(option, "找不到纹理 " + name);
+			}
+			tr = new NinePatch(trg, option.getCapInsetsX(),
+					option.getCapInsetsX() + option.getCapInsetsWidth(),
+					option.getCapInsetsY(), option.getCapInsetsY()
+							+ option.getCapInsetsHeight());
+			// 这么用绝逼出错
+			// tr = atlas.createPatch(name);
 		}
 		// 不支持翻转和镜像
 		return tr;
@@ -435,9 +463,16 @@ public class CocoStudioUIEditor implements Disposable {
 			debug(option, "not support Widget:" + className);
 			return null;
 		}
+		long st = System.nanoTime();
+		System.err.println(widget.getClassname());
 		Actor actor = parser.parse(this, widget, option);
+		System.err.println("parser.parse " + (System.nanoTime() - st)
+				/ 1000000.0f);
 
+		st = System.nanoTime();
 		actor = parser.commonParse(this, widget, option, parent, actor);
+		System.err.println("parser.commonParse " + (System.nanoTime() - st)
+				/ 1000000.0f);
 
 		return actor;
 
@@ -474,12 +509,8 @@ public class CocoStudioUIEditor implements Disposable {
 			fontFile = ttfs.get(option.getFontName());
 		}
 
-		if (fontFile == null) {// 使用默认字体文件
-			fontFile = defaultFont;
-		}
-
 		if (fontFile == null) {
-			fontFile = Gdx.files.internal("DroidSansFallback.ttf");
+			fontFile = defaultFont;
 			debug(option, "ttf字体:" + option.getFontName() + " 不存在,使用默认字体");
 		}
 
