@@ -20,6 +20,7 @@ public class ListView extends ScrollPane implements Disposable{
 	private boolean horv;
 	private Vector2 clickPoint = new Vector2();
 	private boolean isSelected = false;
+	private int cellSpace = 4;
 
 	/**
 	 * 一次可选中的数量 默认为1
@@ -37,7 +38,7 @@ public class ListView extends ScrollPane implements Disposable{
 	public ListView(ScrollPaneStyle style) {
 		super(null, style);
 		this.setWidget(container);
-		container.pad(10).defaults().expandX().space(4);
+		//container.pad(10).defaults().expandX().space(4);
 		this.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -55,8 +56,13 @@ public class ListView extends ScrollPane implements Disposable{
 		cells.clear();
 	}
 	
+	public void setCellSpace(int space){
+		this.cellSpace = space;
+	}
+	
 	public void setItems(Object[] objects, CellWrapper cell, int itemWidth,
 			int itemHeight) {
+		container.pad(10).defaults().expandX().space(cellSpace);
 		if (objects == null)
 			throw new IllegalArgumentException("items cannot be null.");
 		items = objects;
@@ -159,20 +165,21 @@ public class ListView extends ScrollPane implements Disposable{
 		locate(idx);
 	}
 
+	//传入的是cell的idx,个数的话需要idx+1
+	//注意：横向的定位已修改，根据cell的宽度来算，纵向写死未修改
 	private void locate(int idx) {
 		if (horv) {
 			// 横向 true，
 			// 先考虑在最左边的情况
 			int firstPageItems = (int) Math.floor(this.getWidth() / itemWidth);
 
-			if (firstPageItems >= idx) {
+			if (firstPageItems >= idx+1) {
 				// 不用额外滚动
 				scrollX(0);
 				return;
 			}
-
 			// 目前只考虑最简单的情况,把那个移动到最后一个
-			int itemEndPos = (idx + 1) * itemWidth + 100;
+			int itemEndPos = (idx + 1) * itemWidth + 20 + idx*cellSpace;
 			int delta = (int) (itemEndPos - this.getWidth());
 			scrollX(delta);
 		} else {
@@ -181,7 +188,7 @@ public class ListView extends ScrollPane implements Disposable{
 			int firstPageItems = (int) Math
 					.floor(this.getHeight() / itemHeight);
 
-			if (firstPageItems >= idx) {
+			if (firstPageItems >= idx+1) {
 				// 不用额外滚动
 				scrollY(0);
 				return;

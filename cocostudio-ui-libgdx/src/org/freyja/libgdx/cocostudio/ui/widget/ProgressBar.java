@@ -47,9 +47,9 @@ public class ProgressBar extends Table {
 			return false;
 		this.value = value;
 		if(vertical) {
-			super.setSize(this.getWidth(), this.getHeight() * (this.value / this.max));
+			super.setSize(bgImg.getWidth(), bgImg.getHeight() * (this.value / this.max));
 		} else {
-			super.setSize(this.getWidth() * (this.value / this.max), this.getHeight());
+			super.setSize(bgImg.getWidth() * (this.value / this.max), bgImg.getHeight());
 		}
 		
 		return true;

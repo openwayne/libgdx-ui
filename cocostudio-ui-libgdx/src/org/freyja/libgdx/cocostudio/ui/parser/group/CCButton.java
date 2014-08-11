@@ -27,8 +27,6 @@ public class CCButton extends GroupParser {
 				editor.findDrawable(option, option.getNormalData().getPath()),
 				editor.findDrawable(option, option.getPressedData().getPath()),
 				null);
-		Gdx.app.log("按钮资源up", option.getNormalData().getPath());
-		Gdx.app.log("按钮资源down", option.getPressedData().getPath());
 		
 		style.imageDisabled = editor.findDrawable(option, option
 				.getDisabledData().getPath());
