@@ -87,22 +87,20 @@ public class AdvancedImageButton extends ImageButton {
 
 	private void initListener() {
 		Drawable up = this.getStyle().imageUp;
-		if (this.getImage() == null) {
+		if (this.getImage() == null || up == null) {
 			return;
 		}
 		this.getImage().setOrigin(up.getMinWidth() / 2, up.getMinHeight() / 2);
 
 		this.addListener(new ClickListener() {
 			@Override
-			public void enter(InputEvent event, float x, float y, int pointer,
-					Actor fromActor) {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				toBig();
 				super.enter(event, x, y, pointer, fromActor);
 			}
 
 			@Override
-			public void exit(InputEvent event, float x, float y, int pointer,
-					Actor toActor) {
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 				toSmall();
 				super.exit(event, x, y, pointer, toActor);
 			}
