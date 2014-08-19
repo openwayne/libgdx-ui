@@ -15,7 +15,9 @@ public class ListView extends ScrollPane implements Disposable{
 	private CellTable container = new CellTable();
 	private Object[] items;
 	private Array<CellWrapper> cells = new Array<CellWrapper>();
-
+	public Array<CellWrapper> getCells() {
+		return cells;
+	}
 	private int v = 1, h = 1;
 	private boolean horv;
 	private Vector2 clickPoint = new Vector2();
