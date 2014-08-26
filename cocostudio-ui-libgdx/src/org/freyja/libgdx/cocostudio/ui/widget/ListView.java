@@ -365,5 +365,6 @@ public class ListView extends ScrollPane implements Disposable{
 	@Override
 	public void dispose() {
 		removeCells();
+		this.clear();
 	}
 }

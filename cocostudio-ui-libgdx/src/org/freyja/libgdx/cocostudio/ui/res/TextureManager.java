@@ -20,6 +20,7 @@ public class TextureManager {
 	public static void debug() {
 		System.err.println("TextureManager 剩余纹理: " + _cache.size());
 	}
+	
 	public static Texture getTexture(String clzName, String fileName) {
 		return getTexture(clzName, Gdx.files.internal(fileName));
 	}

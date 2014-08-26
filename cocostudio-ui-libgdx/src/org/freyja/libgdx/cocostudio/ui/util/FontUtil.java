@@ -18,6 +18,7 @@ public class FontUtil {
 	static FileHandle fontFile = Gdx.files.internal("DroidSansFallback.ttf");
 
 	static PixmapPacker fontPacker = new PixmapPacker(1024, 1024, Format.RGBA4444, 2, false);
+	
 	public static BitmapFont createFont(String text, int fontSize) {
 		return createFont(fontFile, text, fontSize);
 	}
@@ -52,7 +53,7 @@ public class FontUtil {
 			param.size = fontSize;
 			param.characters = newText;
 			param.flip = false;
-//			param.packer = fontPacker;
+			param.packer = fontPacker;
 			font = generator.generateFont(param);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -183,12 +183,10 @@ public class CocoStudioUIEditor implements Disposable {
 //		jj.setIgnoreUnknownFields(true);
 //		export = jj.fromJson(CCExport.class, json);
 //		ObjectToFile.toFile(export, "export1.dat");
-//		System.err.println("jj.fromJson " + (System.nanoTime() - st) / 1000000.0f);
 
 		
 //		st = System.nanoTime();
 		export = (CCExport) FileToObject.toObj(expName);
-		System.err.println("FileToObject.toObj " + (System.nanoTime() - st) / 1000000.0f);
 		cacheExp.put(expName, export);
 	}
 
@@ -226,8 +224,6 @@ public class CocoStudioUIEditor implements Disposable {
 		if (editorDos == null) {
 			long st = System.nanoTime();
 			editorDos = (Group) parseWidget(null, export.getWidgetTree());
-			System.err.println("createGroup " + (System.nanoTime() - st)
-					/ 1000000.0f);
 		}
 		parseAction();
 		return editorDos;
@@ -459,16 +455,9 @@ public class CocoStudioUIEditor implements Disposable {
 			debug(option, "not support Widget:" + className);
 			return null;
 		}
-		long st = System.nanoTime();
-		System.err.println(widget.getClassname());
 		Actor actor = parser.parse(this, widget, option);
-		System.err.println("parser.parse " + (System.nanoTime() - st)
-				/ 1000000.0f);
 
-		st = System.nanoTime();
 		actor = parser.commonParse(this, widget, option, parent, actor);
-		System.err.println("parser.commonParse " + (System.nanoTime() - st)
-				/ 1000000.0f);
 
 		return actor;
 
