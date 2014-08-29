@@ -8,11 +8,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class TextureManager {
 
 	private static Map<String, RefTexture> _cache = new HashMap<String, RefTexture>();
-
+	
+//	static {
+//		Timer.schedule(new Task() {
+//			
+//			@Override
+//			public void run() {
+//				debug();
+//			}
+//		}, 0, 1);
+//	}
+	
 	private static void addCache(String key, RefTexture texture) {
 		_cache.put(key, texture);
 	}
