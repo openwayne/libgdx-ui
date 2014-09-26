@@ -11,13 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-public class ListView extends ScrollPane implements Disposable{
+public class ListView extends ScrollPane implements Disposable {
 	private CellTable container = new CellTable();
 	private Object[] items;
 	private Array<CellWrapper> cells = new Array<CellWrapper>();
+
 	public Array<CellWrapper> getCells() {
 		return cells;
 	}
+
 	private int v = 1, h = 1;
 	private boolean horv;
 	private Vector2 clickPoint = new Vector2();
@@ -40,7 +42,7 @@ public class ListView extends ScrollPane implements Disposable{
 	public ListView(ScrollPaneStyle style) {
 		super(null, style);
 		this.setWidget(container);
-		//container.pad(10).defaults().expandX().space(4);
+		// container.pad(10).defaults().expandX().space(4);
 		this.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -50,18 +52,23 @@ public class ListView extends ScrollPane implements Disposable{
 		});
 
 	}
-	
+
 	private void removeCells() {
+		for (CellWrapper dd : selectArray) {
+			dd.dispose();
+		}
+		selectArray.clear();
+
 		for (int i = 0; i < cells.size; i++) {
 			cells.get(i).dispose();
 		}
 		cells.clear();
 	}
-	
-	public void setCellSpace(int space){
+
+	public void setCellSpace(int space) {
 		this.cellSpace = space;
 	}
-	
+
 	public void setItems(Object[] objects, CellWrapper cell, int itemWidth,
 			int itemHeight) {
 		container.pad(10).defaults().expandX().space(cellSpace);
@@ -159,7 +166,7 @@ public class ListView extends ScrollPane implements Disposable{
 		if (idx <= 0) {
 			idx = 0;
 		}
-		if(idx >= cells.size) {
+		if (idx >= cells.size) {
 			idx = cells.size - 1;
 		}
 		hitLogic(cells.get(idx));
@@ -167,21 +174,21 @@ public class ListView extends ScrollPane implements Disposable{
 		locate(idx);
 	}
 
-	//传入的是cell的idx,个数的话需要idx+1
-	//注意：横向的定位已修改，根据cell的宽度来算，纵向写死未修改
+	// 传入的是cell的idx,个数的话需要idx+1
+	// 注意：横向的定位已修改，根据cell的宽度来算，纵向写死未修改
 	private void locate(int idx) {
 		if (horv) {
 			// 横向 true，
 			// 先考虑在最左边的情况
 			int firstPageItems = (int) Math.floor(this.getWidth() / itemWidth);
 
-			if (firstPageItems >= idx+1) {
+			if (firstPageItems >= idx + 1) {
 				// 不用额外滚动
 				scrollX(0);
 				return;
 			}
 			// 目前只考虑最简单的情况,把那个移动到最后一个
-			int itemEndPos = (idx + 1) * itemWidth + 20 + idx*cellSpace;
+			int itemEndPos = (idx + 1) * itemWidth + 20 + idx * cellSpace;
 			int delta = (int) (itemEndPos - this.getWidth());
 			scrollX(delta);
 		} else {
@@ -190,7 +197,7 @@ public class ListView extends ScrollPane implements Disposable{
 			int firstPageItems = (int) Math
 					.floor(this.getHeight() / itemHeight);
 
-			if (firstPageItems >= idx+1) {
+			if (firstPageItems >= idx + 1) {
 				// 不用额外滚动
 				scrollY(0);
 				return;
@@ -296,7 +303,7 @@ public class ListView extends ScrollPane implements Disposable{
 			this.selectAmount = selectAmount;
 		}
 	}
-	
+
 	/**
 	 * 全选</br>
 	 * org.freyja.libgdx.cocostudio.ui.widget.ListView.setSelected(boolean, int)
@@ -304,7 +311,7 @@ public class ListView extends ScrollPane implements Disposable{
 	public void checkedAll() {
 		if (isSelected) {
 			for (int i = 0; i < cells.size; i++) {
-				if (cells.get(i).isSelected())//已选中的cell不再走hitLogic
+				if (cells.get(i).isSelected())// 已选中的cell不再走hitLogic
 					continue;
 				hitLogic(cells.get(i));
 			}

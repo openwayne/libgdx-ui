@@ -35,32 +35,32 @@ public class CCTextField extends WidgetParser {
 		TextFieldStyle style = new TextFieldStyle(labelStyle.font,
 				labelStyle.fontColor, null, null, null);
 
-		style.font = FontUtil.createFont(labelStyle.getFontFileHandle(),
-				"0123456789", labelStyle.getFontSize());
+//		style.font = FontUtil.createFont(labelStyle.getFontFileHandle(),
+//				"0123456789", labelStyle.getFontSize());
 
 		TextField textField = new TextField(option.getText(), style) {
-
-			@Override
-			public void setText(String text) {
-				String sumText = text + getMessageText() + defaultText;
-
-				getStyle().font = FontUtil.createFont(
-						labelStyle.getFontFileHandle(), sumText,
-						labelStyle.getFontSize());
-
-				super.setText(text);
-			};
-
-			@Override
-			public void setMessageText(String messageText) {
-
-				String sumText = messageText + getText() + defaultText;
-
-				getStyle().font = FontUtil.createFont(
-						labelStyle.getFontFileHandle(), sumText,
-						labelStyle.getFontSize());
-				super.setMessageText(messageText);
-			};
+//
+//			@Override
+//			public void setText(String text) {
+//				String sumText = text + getMessageText() + defaultText;
+//
+//				getStyle().font = FontUtil.createFont(
+//						labelStyle.getFontFileHandle(), sumText,
+//						labelStyle.getFontSize());
+//
+//				super.setText(text);
+//			};
+//
+//			@Override
+//			public void setMessageText(String messageText) {
+//
+//				String sumText = messageText + getText() + defaultText;
+//
+//				getStyle().font = FontUtil.createFont(
+//						labelStyle.getFontFileHandle(), sumText,
+//						labelStyle.getFontSize());
+//				super.setMessageText(messageText);
+//			};
 		};
 		if (option.isMaxLengthEnable()) {
 			textField.setMaxLength(option.getMaxLength());

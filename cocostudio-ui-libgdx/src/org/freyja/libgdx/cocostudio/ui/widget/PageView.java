@@ -62,5 +62,11 @@ public class PageView extends Table {
 		cacheIdxName.put(regIdxTmp++, panelName);
 		cacheNameActor.put(panelName, panel);
 	}
-
+	
+	@Override
+	public void dispose() {
+		cacheIdxName.clear();
+		cacheNameActor.clear();
+		super.dispose();
+	}
 }

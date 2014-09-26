@@ -177,7 +177,7 @@ public class CocoStudioUIEditor implements Disposable {
 			return;
 		}
 		
-		long st = System.nanoTime();
+//		long st = System.nanoTime();
 //		String json = jsonFile.readString("utf-8");
 //		Json jj = new Json();
 //		jj.setIgnoreUnknownFields(true);

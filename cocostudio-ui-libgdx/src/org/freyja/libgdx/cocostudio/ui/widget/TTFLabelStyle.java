@@ -1,5 +1,7 @@
 package org.freyja.libgdx.cocostudio.ui.widget;
 
+import org.freyja.libgdx.cocostudio.ui.parser.widget.CCLabel;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,14 +12,14 @@ public class TTFLabelStyle extends LabelStyle {
 	private FileHandle fontFileHandle;
 
 	private int fontSize;
-	private static BitmapFont defaultBmf = new BitmapFont();
+//	private static BitmapFont defaultBmf = new BitmapFont();
 	
 	public TTFLabelStyle(Color fontColor, FileHandle fontFileHandle,
 			int fontSize) {
-		super(null, fontColor);
+		super(CCLabel.sharedFont, fontColor);
 		this.fontFileHandle = fontFileHandle;
 		this.fontSize = fontSize;
-		this.font = defaultBmf;
+		this.font = CCLabel.sharedFont;
 	}
 
 	public int getFontSize() {
@@ -37,9 +39,9 @@ public class TTFLabelStyle extends LabelStyle {
 	}
 
 	public void clearFont() {
-		if(!font.equals(defaultBmf)) {
-			font.dispose();
-		}
+//		if(!font.equals(defaultBmf)) {
+//			font.dispose();
+//		}
 	}
 
 }

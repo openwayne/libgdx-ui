@@ -6,8 +6,10 @@ import org.freyja.libgdx.cocostudio.ui.CocoStudioUIEditor;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 public abstract class CellWrapper implements Disposable {
 	private CocoStudioUIEditor _editor;
