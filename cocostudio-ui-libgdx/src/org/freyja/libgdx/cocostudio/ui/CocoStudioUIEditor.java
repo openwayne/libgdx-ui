@@ -101,7 +101,7 @@ public class CocoStudioUIEditor implements Disposable {
 
 	private Map<Integer, Actor> _tags;
 	
-	private final static Map<String, CCExport> cacheExp = new HashMap<String, CCExport>();
+//	private final static Map<String, CCExport> cacheExp = new HashMap<String, CCExport>();
 
 	/**
 	 * 不需要显示文字
@@ -172,10 +172,10 @@ public class CocoStudioUIEditor implements Disposable {
 		// dirName += File.separator;
 		// }
 		String expName = jsonFile.path().replace(".json", ".exp");
-		if(cacheExp.containsKey(expName)) {
-			export = cacheExp.get(expName);
-			return;
-		}
+//		if(cacheExp.containsKey(expName)) {
+//			export = cacheExp.get(expName);
+//			return;
+//		}
 		
 //		long st = System.nanoTime();
 //		String json = jsonFile.readString("utf-8");
@@ -187,7 +187,7 @@ public class CocoStudioUIEditor implements Disposable {
 		
 //		st = System.nanoTime();
 		export = (CCExport) FileToObject.toObj(expName);
-		cacheExp.put(expName, export);
+//		cacheExp.put(expName, export);
 	}
 
 	/**
